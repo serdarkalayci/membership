@@ -1,0 +1,22 @@
+    <!-- <table id="members" class="memberlist"> -->
+        {{ range .Members }}
+        <!-- <tr><td> -->
+        <div class="member-card-frame">
+            <div class="member-card" 
+            hx-get="/member/{{ .ID }}"
+            hx-trigger="click"
+            hx-target="#memberdetail"
+            hx-swap="innerHTML">
+                <div class="member-card-header">{{ .FirstName }} {{ .LastName }}</div>
+                <div class="member-card-details">
+                    <span>📧 {{ .Email }}</span>
+                    <span>☎️ {{ .Phone }}</span>
+                    <span>🏠 {{ .City.Name }}</span>
+                </div>
+            </div>
+        </div>
+        <!-- </td></tr>
+        <tr><td></td></tr> -->
+        {{ end }}
+    <!-- </table> -->
+<!--onclick="htmx.remove('#member-details')"-->

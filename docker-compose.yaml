@@ -1,0 +1,72 @@
+version: '3.7'
+services:
+  membership:
+    build: api/.
+    container_name: membership
+    ports:
+      - "5550:5550"
+    environment: 
+      BASE_URL : ":5550"
+      JAEGER_AGENT_HOST : "jaeger"
+      JAEGER_AGENT_PORT : 6831
+      JAEGER_SERVICE_NAME: membership
+      ConnectionString: "http://arangodb:8529"
+      DatabaseName: membership
+      DbUserName: root
+      DbPassword: password
+    networks:
+      - membership-network
+    depends_on:
+      - arangodb
+  arangodb:
+    image: arangodb/arangodb:3.10.0
+    container_name: membership_db
+    ports:
+      - 8529:8529
+    environment:
+      ARANGO_ROOT_PASSWORD: password
+    networks:
+      - membership-network
+    volumes:
+      - ./arangodump:/docker-entrypoint-initdb.d/dumps/membership
+      - dbdata:/var/lib/arangodb3
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    container_name: membership_jaeger
+    ports: 
+      - "5775:5775/udp"
+      - "6831:6831/udp"
+      - "6832:6832/udp"
+      - "5778:5778"
+      - "16686:16686"
+      - "14268:14268"
+      - "9411:9411"
+    networks:
+      - membership-network     
+    profiles:
+      - full
+  prometheus:
+    build: prometheus/.
+    container_name: membership_prometheus
+    networks:
+      - membership-network    
+    profiles:
+      - full
+  grafana:
+    image: grafana/grafana
+    container_name: membership_grafana
+    ports:
+      - 3000:3000
+    volumes:
+      - grafana-storage:/var/lib/grafana
+    depends_on: 
+      - prometheus  
+    networks:
+      - membership-network    
+    profiles:
+      - full
+networks:
+  membership-network:     
+volumes:
+  dbdata:
+  grafana-storage:

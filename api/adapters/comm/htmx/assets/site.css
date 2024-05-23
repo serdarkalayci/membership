@@ -1,0 +1,106 @@
+/* Styles for member page */
+.member {
+    background-color: #f2f2f2;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.member h1 {
+    color: #333;
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.member p {
+    color: #666;
+    font-size: 16px;
+}
+
+/* Styles for memberlist page */
+.memberlist {
+    background-color:#fff;
+}
+
+.member-card {
+    background-color: #c9c9c9;
+    padding: 5px;
+    margin-top: 10px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.member-card-frame {
+    padding: 5px;
+    margin-top: 5px;
+}
+
+.member-details {
+    position: sticky;
+    top: 20px;
+    background-color: #d6d6d6;
+    padding: 5px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.member-card-header {
+    color: #333;
+    font-size: 18px;
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.member-card-details {
+    color: #666;
+    font-size: 14px;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.member-card-details span {
+    margin-right: 10px;
+}
+
+.member-card-details span:last-child {
+    margin-right: 0;
+}
+
+.container {
+    background-color:#2E4272;
+    display:flex;
+}
+.column-left {
+    background-color:#4F628E;
+    width: 600px;
+    padding-right: 20px;
+}
+.column-right {
+    background-color:#7887AB;
+    flex-grow: 1;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2; /* Light gray for even rows */
+}
+
+tr:nth-child(odd) {
+    background-color: #ffffff; /* White for odd rows */
+}
+
+tr:hover {
+    background-color: #ddd;
+}

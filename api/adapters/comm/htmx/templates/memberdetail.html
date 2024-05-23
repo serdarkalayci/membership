@@ -1,0 +1,67 @@
+<div id="member-details" class="member-details">
+    <div id="detail-show" hx-target="this" hx-swap="outerHTML">
+    <table>
+        <tr>
+            <td>Email:</td>
+            <td>{{ .Member.Email }}</td>
+        </tr>
+        <tr>
+            <td>First Name:</td>
+            <td>{{ .Member.FirstName }}</td>
+        </tr>
+        <tr>
+            <td>Last Name:</td>
+            <td>{{ .Member.LastName }}</td>
+        </tr>
+        <tr>
+            <td>City:</td>
+            <td>{{ .Member.City }}</td>
+        </tr>
+        <tr>
+            <td>Area:</td>
+            <td>{{ .Member.Area }}</td>
+        </tr>
+        <tr>
+            <td>Phone:</td>
+            <td>{{ .Member.Phone }}</td>
+        </tr>
+        <tr>
+            <td>Notes:</td>
+            <td>{{ .Member.Notes }}</td>
+        </tr>
+        <tr>
+            <td>Membership Type:</td>
+            <td>{{ .Member.MembershipType }}</td>
+        </tr>
+        <tr>
+            <td>Membership Start Date:</td>
+            <td>{{ .Member.MembershipStartDate }}</td>
+        </tr>
+        <tr>
+            <td>Last Contact Date:</td>
+            <td>{{ .Member.LastContactDate }}</td>
+        </tr>
+        <tr>
+            <td>Occupation:</td>
+            <td>{{ .Member.Occupation }}</td>
+        </tr>
+        <tr>
+            <td>Education:</td>
+            <td>{{ .Member.Education }}</td>
+        </tr>
+        <tr>
+            <td>Date of Birth:</td>
+            <td>{{ .Member.DateOfBirth }}</td>
+        </tr>
+    </table>
+    <button hx-get="/member/{{ .Member.ID }}/edit" class="btn btn-primary">
+        Click To Edit
+        </button>
+    <div>
+        <button onclick="htmx.remove('#member-details')">Close</button>
+    </div>
+    </div>
+</div>
+
+
+

@@ -19,3 +19,12 @@
 
 # Go workspace file
 go.work
+
+# Dev Environment Files
+database/pgdata
+**/.DS_Store
+/.vscode 
+/.idea 
+/api/__debug_bin*
+api/api
+
