@@ -7,7 +7,7 @@ import (
 
 // MemberRepository is the interface to interact with Member domain object
 type MemberRepository interface {
-	ListMembers() ([]domain.Member, error)
+	ListMembers(pageSize, pageNum int) ([]domain.Member, int64, error)
 	GetMember(id string) (domain.Member, error)
 }
 
@@ -24,8 +24,17 @@ func NewMemberService(dc DataContextCarrier) MemberService {
 }
 
 // ListMembers simply returns the whole list of member or an error that is returned from the repository
-func (ms MemberService) ListMembers() ([]domain.Member, error) {
-	return ms.dc.GetMemberRepository().ListMembers()
+func (ms MemberService) ListMembers(pageSize, pageNum int) ([]domain.Member, int64, error) {
+	switch {
+		case pageSize <= 0 : 
+			pageSize = 10
+		case pageSize > 100 :
+			pageSize = 100
+	}
+	if pageNum <= 0 {
+		pageNum = 1
+	}
+	return ms.dc.GetMemberRepository().ListMembers(pageSize, pageNum)
 }
 
 // GetMember simply returns the member with the given id or an error that is returned from the repository

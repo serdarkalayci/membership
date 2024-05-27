@@ -3,6 +3,7 @@ package rest
 import (
 	"context"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/nicholasjackson/env"
@@ -78,8 +79,20 @@ func (restServer *RestServer) Shutdown(ctx context.Context) {
 }
 
 func (rs *RestServer)getMembers(c *gin.Context) {
+	pageSize := 10
+	pageNum := 1
+	if c.Query("pageSize") != "" {
+		size, err := strconv.Atoi(c.Query("pageSize")); if err == nil {
+			pageSize = size
+		}
+	}
+	if c.Query("pageNum") != "" {
+		num, err := strconv.Atoi(c.Query("pageNum")); if err == nil {
+			pageNum = num
+		}
+	}
 	ms := application.NewMemberService(rs.dbContext)
-	members, err := ms.ListMembers()
+	members, _, err := ms.ListMembers(pageSize, pageNum)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

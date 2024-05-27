@@ -18,5 +18,20 @@
         <!-- </td></tr>
         <tr><td></td></tr> -->
         {{ end }}
+        <p>Showing records {{ .PageInfo.CurrentPage }} of {{ .PageInfo.TotalCount }}</p>
+        <p>
+            {{ if .PageInfo.HasPrevious }}
+            <button hx-get="/member?pageNum={{ .PageInfo.PrevPage }}"
+            hx-trigger="click"
+            hx-target="#memberlist"
+            hx-swap="innerHTML">Önceki Sayfa</button>
+            {{ end }}
+            {{ if .PageInfo.HasNext }}
+            <button hx-get="/member?pageNum={{ .PageInfo.NextPage }}"
+            hx-trigger="click"
+            hx-target="#memberlist"
+            hx-swap="innerHTML">Sonraki Sayfa</button>
+            {{ end }}
+        </p>
     <!-- </table> -->
 <!--onclick="htmx.remove('#member-details')"-->

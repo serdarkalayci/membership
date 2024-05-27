@@ -18,12 +18,16 @@ func newMemberRepository(database *gorm.DB) MemberRepository {
 	}
 }
 
-func (mr MemberRepository) ListMembers() ([]domain.Member, error) {
+func (mr MemberRepository) ListMembers(pageSize, pageNum int) ([]domain.Member, int64, error) {
 	var members []dto.ListMember
-	if err := mr.db.Model(&dto.Member{}).Joins("City").Find(&members).Error; err != nil {
-		return nil, err
+	if err := mr.db.Scopes(Paginate(pageSize, pageNum)).Model(&dto.Member{}).Joins("City").Find(&members).Error; err != nil {
+		return nil, 0, err
 	}
-	return mappers.MapListMemberDTOs2Members(members), nil
+	var count int64 = 0
+	if err := mr.db.Model(&dto.Member{}).Joins("City").Count(&count).Error; err != nil {
+		return nil, 0, err
+	}
+	return mappers.MapListMemberDTOs2Members(members), count, nil
 }
 
 func (mr MemberRepository) GetMember(id string) (domain.Member, error) {

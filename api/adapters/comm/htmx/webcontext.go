@@ -15,8 +15,8 @@ func SetWebRoutes(engine *gin.Engine, dbContext *application.DataContext) {
 	}
 	engine.Static("/assets", "./adapters/comm/htmx/assets")
 	engine.LoadHTMLGlob("./adapters/comm/htmx/templates/*")
-	engine.GET("/member", ws.GetMemberPage)
-	engine.GET("/members", ws.GetMemberList)
+	engine.GET("/memberpage", ws.GetMemberPage)
+	engine.GET("/member", ws.GetMemberList)
 	engine.GET("/member/:id", ws.GetMemberDetail)
 	engine.GET("/member/:id/edit", ws.EditMemberDetail)
 }

@@ -1,6 +1,8 @@
 package htmx
 
 import (
+	"strconv"
+
 	"github.com/gin-gonic/gin"
 	"github.com/serdarkalayci/membership/api/application"
 )
@@ -12,15 +14,31 @@ func (ws WebServer) GetMemberPage(c *gin.Context) {
 }
 
 func (ws WebServer) GetMemberList(c *gin.Context) {
+	pageSize := 10
+	pageNum := 1
+	if c.Query("pageSize") != "" {
+		size, err := strconv.Atoi(c.Query("pageSize")); if err == nil {
+			pageSize = size
+		}
+	}
+	if c.Query("pageNum") != "" {
+		num, err := strconv.Atoi(c.Query("pageNum")); if err == nil {
+			pageNum = num
+		}
+	}
 	ms := application.NewMemberService(ws.dbContext)
-	members, err := ms.ListMembers()
+	members, count, err := ms.ListMembers(pageSize, pageNum)
+
 	if err != nil {
 		c.HTML(500, "memberlist.html", nil)
 		return
 	}
+	pageInfo := calculatePageInfo(pageSize, pageNum, count)
 	c.HTML(200, "memberlist.html", gin.H{
 		"Members": members,
+		"PageInfo": pageInfo,
 	})
+
 }
 
 func (ws WebServer) GetMemberDetail(c *gin.Context) {
