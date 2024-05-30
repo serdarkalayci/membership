@@ -1,70 +1,62 @@
-CREATE SEQUENCE "areas_id_seq" INCREMENT 1 MINVALUE 1;
+CREATE DATABASE membership;
+CREATE USER membershipuser WITH PASSWORD 'membershippassword';
+GRANT admin TO membershipuser;
+USE membership;
 
-CREATE TABLE "public"."areas" (
-    "id" integer DEFAULT nextval('"areas_id_seq"') NOT NULL,
-    "name" character varying NOT NULL,
-    CONSTRAINT "areas_pkey" PRIMARY KEY ("id")
-) WITH (oids = false);
+-- Creating tables
+CREATE TABLE public.provinces (
+    id integer NOT NULL DEFAULT unique_rowid(),
+    name VARCHAR(255) NOT NULL,
+    CONSTRAINT provinces_pkey PRIMARY KEY (id ASC)
+);
 
+CREATE TABLE public.cities (
+    id integer NOT NULL DEFAULT unique_rowid(),
+    name VARCHAR(255) NOT NULL,
+    province_id integer NOT NULL,
+    CONSTRAINT cities_pkey PRIMARY KEY (id ASC),
+    CONSTRAINT cities_province FOREIGN KEY (province_id) REFERENCES public.provinces(id)
+);
 
-CREATE SEQUENCE "provinces_id_seq" INCREMENT 1 MINVALUE 1;
+CREATE TABLE public.areas (
+    id integer NOT NULL DEFAULT unique_rowid(),
+    name VARCHAR(255) NOT NULL,
+    CONSTRAINT areas_pkey PRIMARY KEY (id ASC)
+);
 
-CREATE TABLE "public"."provinces" (
-    "id" integer DEFAULT nextval('"provinces_id_seq"') NOT NULL,
-    "name" character varying NOT NULL,
-    CONSTRAINT "provinces_pkey" PRIMARY KEY ("id")
-) WITH (oids = false);
+CREATE TABLE public.membership_types (
+    id integer NOT NULL DEFAULT unique_rowid(),
+    name VARCHAR(255) NOT NULL,
+    CONSTRAINT membership_types_pkey PRIMARY KEY (id ASC)
+);
 
-
-CREATE SEQUENCE "cities_id_seq" INCREMENT 1 MINVALUE 1;
-
-CREATE TABLE "public"."cities" (
-    "id" integer DEFAULT nextval('"cities_id_seq"') NOT NULL,
-    "province_id" integer NOT NULL,
-    "name" character varying NOT NULL,
-    CONSTRAINT "cities_pkey" PRIMARY KEY ("id")
-) WITH (oids = false);
-
-ALTER TABLE ONLY "public"."cities" ADD CONSTRAINT "cities_province_id_fkey" FOREIGN KEY ("province_id") REFERENCES "provinces"("id") NOT DEFERRABLE;
-
-
-CREATE SEQUENCE "membershiptypes_id_seq" INCREMENT 1 MINVALUE 1;
-
-CREATE TABLE "public"."membershiptypes" (
-    "id" integer DEFAULT nextval('"membershiptypes_id_seq"') NOT NULL,
-    "name" character varying NOT NULL,
-    CONSTRAINT "membershiptypes_pkey" PRIMARY KEY ("id")
-) WITH (oids = false);
-
-
-CREATE TABLE "public"."members" (
-    "id" uuid NOT NULL,
-    "firstname" character varying(255) NOT NULL,
-    "lastname" character varying(255) NOT NULL,
-    "passive" boolean DEFAULT false NOT NULL,
-    "email" character varying(255) NOT NULL,
-    "phone" character varying(255) NOT NULL,
-    "city_id" integer,
-    "area_id" integer,
-    "membership_type_id" integer,
-    "membership_start_date" date,
-    "last_contact_date" date,
-    "occupation" character varying,
-    "education" character varying,
-    "date_of_birth" date,
-    "notes" text NULL,
-    CONSTRAINT "members_email_key" UNIQUE ("email"),
-    CONSTRAINT "members_phone_key" UNIQUE ("phone"),
-    CONSTRAINT "members_pkey" PRIMARY KEY ("id")
-) WITH (oids = false);
+CREATE TABLE public.members (
+    id UUID NOT NULL,
+    first_name VARCHAR(255) NOT NULL,
+    last_name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    phone VARCHAR(255) NULL,
+    city_id integer NOT NULL,
+    area_id integer NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT now():::TIMESTAMP,
+    membership_type_id integer NOT NULL,
+    membership_start_date DATE NULL,
+    last_contact_date DATE NULL,
+    occupation VARCHAR(255) NULL,
+    education VARCHAR(255) NULL,
+    date_of_birth DATE NULL,
+    passive BOOL NOT NULL DEFAULT false,
+    notes TEXT NULL,
+    CONSTRAINT members_pkey PRIMARY KEY (id ASC),
+    CONSTRAINT members_city FOREIGN KEY (city_id) REFERENCES public.cities(id),
+    CONSTRAINT members_area FOREIGN KEY (area_id) REFERENCES public.areas(id),
+    CONSTRAINT members_membership_type FOREIGN KEY (membership_type_id) REFERENCES public.membership_types(id)
+);
 
 
-ALTER TABLE ONLY "public"."members" ADD CONSTRAINT "members_area_fkey" FOREIGN KEY ("area_id") REFERENCES "areas"("id") NOT DEFERRABLE;
-ALTER TABLE ONLY "public"."members" ADD CONSTRAINT "members_membershiptype_fkey" FOREIGN KEY ("membership_type_id") REFERENCES "membershiptypes"("id") NOT DEFERRABLE;
-ALTER TABLE ONLY "public"."members" ADD CONSTRAINT "members_city_id_fkey" FOREIGN KEY ("city_id") REFERENCES "cities"("id") NOT DEFERRABLE;
 
--- Inserting provinces
-INSERT INTO "public"."provinces" ("id","name") VALUES
+-- Inserting Provinces
+INSERT INTO public.provinces ("id", "name") VALUES
 (1, 'Drenthe'),
 (2, 'Flevoland'),
 (3, 'Friesland'),
@@ -76,75 +68,75 @@ INSERT INTO "public"."provinces" ("id","name") VALUES
 (9, 'Overijssel'),
 (10, 'Utrecht'),
 (11, 'Zeeland'),
-(12, 'Zuid-Holland');
+(12, 'ZuID-Holland');
 
--- Inserting cities
-INSERT INTO "public"."cities" ("province_id", "name") VALUES
-(1, 'Emmen'), -- Drenthe
-(1, 'Assen'), -- Drenthe
-(1, 'Hoogeveen'), -- Drenthe
+-- Inserting Cities
+INSERT INTO public.cities ("id", "province_id", "name") VALUES
+(1, 1, 'Emmen'), -- Drenthe
+(2, 1, 'Assen'), -- Drenthe
+(3, 1, 'Hoogeveen'), -- Drenthe
 
-(2, 'Almere'), -- Flevoland
-(2, 'Emmeloord'), -- Flevoland
-(2, 'Dronten'), -- Flevoland
+(4, 2, 'Almere'), -- Flevoland
+(5, 2, 'Emmeloord'), -- Flevoland
+(6, 2, 'Dronten'), -- Flevoland
 
-(3, 'Sneek'), -- Friesland
-(3, 'Heerenveen'), -- Friesland
-(3, 'Harlingen'), -- Friesland
+(7, 3, 'Sneek'), -- Friesland
+(8, 3, 'Heerenveen'), -- Friesland
+(9, 3, 'Harlingen'), -- Friesland
 
-(4, 'Nijmegen'), -- Gelderland
-(4, 'Apeldoorn'), -- Gelderland
-(4, 'Doetinchem'), -- Gelderland
+(10, 4, 'Nijmegen'), -- Gelderland
+(11, 4, 'Apeldoorn'), -- Gelderland
+(12, 4, 'Doetinchem'), -- Gelderland
 
-(5, 'Groningen'), -- Groningen
-(5, 'Winschoten'), -- Groningen
-(5, 'Veendam'), -- Groningen
+(13, 5, 'Groningen'), -- Groningen
+(14, 5, 'Winschoten'), -- Groningen
+(15, 5, 'Veendam'), -- Groningen
 
-(6, 'Venlo'), -- Limburg
-(6, 'Sittard'), -- Limburg
-(6, 'Roermond'), -- Limburg
+(16, 6, 'Venlo'), -- Limburg
+(17, 6, 'Sittard'), -- Limburg
+(18, 6, 'Roermond'), -- Limburg
 
-(7, 'Eindhoven'), -- Noord-Brabant
-(7, 'Tilburg'), -- Noord-Brabant
-(7, 'Breda'), -- Noord-Brabant
+(19, 7, 'Eindhoven'), -- Noord-Brabant
+(20, 7, 'Tilburg'), -- Noord-Brabant
+(21, 7, 'Breda'), -- Noord-Brabant
 
-(8, 'Amsterdam'), -- Noord-Holland
-(8, 'Haarlem'), -- Noord-Holland
-(8, 'Hilversum'), -- Noord-Holland
+(22, 8, 'Amsterdam'), -- Noord-Holland
+(23, 8, 'Haarlem'), -- Noord-Holland
+(24, 8, 'Hilversum'), -- Noord-Holland
 
-(9, 'Enschede'), -- Overijssel
-(9, 'Deventer'), -- Overijssel
-(9, 'Hengelo'), -- Overijssel
+(25, 9, 'Enschede'), -- Overijssel
+(26, 9, 'Deventer'), -- Overijssel
+(27, 9, 'Hengelo'), -- Overijssel
 
-(10, 'Amersfoort'), -- Utrecht
-(10, 'Nieuwegein'), -- Utrecht
-(10, 'Soest'), -- Utrecht
+(28, 10, 'Amersfoort'), -- Utrecht
+(29, 10, 'Nieuwegein'), -- Utrecht
+(30, 10, 'Soest'), -- Utrecht
 
-(11, 'Vlissingen'), -- Zeeland
-(11, 'Goes'), -- Zeeland
-(11, 'Terneuzen'), -- Zeeland
+(31, 11, 'Vlissingen'), -- Zeeland
+(32, 11, 'Goes'), -- Zeeland
+(33, 11, 'Terneuzen'), -- Zeeland
 
-(12, 'Rotterdam'), -- Zuid-Holland
-(12, 'The Hague'), -- Zuid-Holland
-(12, 'Dordrecht'); -- Zuid-Holland
+(34, 12, 'Rotterdam'), -- ZuID-Holland
+(35, 12, 'The Hague'), -- ZuID-Holland
+(36, 12, 'Dordrecht'); -- ZuID-Holland
 
--- Inserting areas
-INSERT INTO "public"."areas" ("name") VALUES
-('Eindhoven'),
-('Amsterdam'),
-('Rotterdam'),
-('Utrecht');
+-- Inserting Areas
+INSERT INTO public.areas ("id", "name") VALUES
+(1, 'Eindhoven'),
+(2, 'Amsterdam'),
+(3, 'Rotterdam'),
+(4, 'Utrecht');
 
--- Inserting membership types
-INSERT INTO "public"."membershiptypes" ("name") VALUES
-('Kadro'),
-('Aktif'),
-('Sessiz'),
-('Üye'),
-('Potansiyel');
+-- Inserting Membership types
+INSERT INTO public.membership_types ("id", "name") VALUES
+(1, 'Kadro'),
+(2, 'Aktif'),
+(3, 'Sessiz'),
+(4, 'Üye'),
+(5, 'Potansiyel');
 
--- Inserting members
-INSERT INTO "public"."members" ("id", "firstname", "lastname", "passive", "email", "phone", "city_id", "area_id", "membership_type_id", "membership_start_date", "last_contact_date", "occupation", "education", "date_of_birth") VALUES
+-- Inserting Members
+INSERT INTO public.members ("id", "first_name", "last_name", "passive", "email", "phone", "city_id", "area_id", "membership_type_id", "membership_start_date", "last_contact_date", "occupation", "education", "date_of_birth") VALUES
 ('00000000-0000-0000-0000-000000000001', 'Oliver', 'Smith', false, 'oliver.smith@example.com', '123456789', 1, 1, 1, '2022-01-01', '2024-05-13', 'Engineer', 'Bachelor of Engineering', '1980-01-01'),
 ('00000000-0000-0000-0000-000000000002', 'Emma', 'Johnson', true, 'emma.johnson@example.com', '234567890', 2, 2, 2, '2022-01-02', '2024-05-12', 'Doctor', 'Doctor of Medicine', '1985-02-02'),
 ('00000000-0000-0000-0000-000000000003', 'William', 'Williams', false, 'william.williams@example.com', '345678901', 3, 3, 3, '2022-01-03', '2024-05-11', 'Teacher', 'Bachelor of Education', '1990-03-03'),

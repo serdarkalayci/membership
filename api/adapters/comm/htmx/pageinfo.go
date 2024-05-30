@@ -5,7 +5,7 @@ import "fmt"
 type pageInfo struct {
 	PageSize int
 	PageNum  int
-	TotalCount   int64
+	TotalCount   int
 	CurrentPage string
 	HasPrevious bool
 	HasNext   bool
@@ -13,7 +13,7 @@ type pageInfo struct {
 	NextPage int
 }
 
-func calculatePageInfo(pageSize, pageNum int, count int64) pageInfo {
+func calculatePageInfo(pageSize, pageNum int, count int) pageInfo {
 	var pi pageInfo
 	pi.PageSize = pageSize
 	pi.PageNum = pageNum

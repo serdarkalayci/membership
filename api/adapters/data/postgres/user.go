@@ -3,20 +3,22 @@ package postgres
 import (
 	"errors"
 
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/serdarkalayci/membership/api/domain"
-	"gorm.io/gorm"
 )
 
 // UserRepository holds the arangodb client and database name for methods to use
 type UserRepository struct {
-	db *gorm.DB
-}
-
-func newUserRepository(database *gorm.DB) UserRepository {
-	return UserRepository{
-		db: database,
+		cp     *pgxpool.Pool
+		dbName string
 	}
-}
+	
+	func newUserRepository(pool *pgxpool.Pool, databaseName string) UserRepository {
+		return UserRepository{
+			cp:     pool,
+			dbName: databaseName,
+		}
+	}
 
 func (ur UserRepository) GetUser(ID string) (domain.User, error) {
 	return domain.User{}, errors.New("Not implemented")

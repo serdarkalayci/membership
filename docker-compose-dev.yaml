@@ -16,28 +16,28 @@ services:
   #   depends_on:
   #     - membership-db
   membership-db:
-    image: arm64v8/postgres:16.2-bullseye
-    container_name: membership-db
-    hostname: membership-db
-    shm_size: 128mb
+    container_name: crdb
+    hostname: crdb
+    image: cockroachdb/cockroach:latest
+    # command: ["start-single-node", "--cluster-name=example-single-node", "--logtostderr=WARNING", "--log-file-verbosity=WARNING", "--insecure"]
+    command: start-single-node
     ports:
-      - 5432:5432
+      - "26257:26257"
+      - "8080:8080"
     environment:
-      POSTGRES_PASSWORD: mysecretpassword
-      POSTGRES_DB: membership
-      POSTGRES_USER: membershipuser
-      PGDATA: /var/lib/postgresql/data/pgdata
-      # COCKROACH_PASSWORD: membershippassword
+      - COCKROACH_DATABASE:membership
+      - COCKROACH_USER:membershipuser
+      - COCKROACH_PASSWORD:membershippassword
     networks:
       - membership-network
     volumes:
       - ./database/init:/docker-entrypoint-initdb.d
-      - membershipdbdata:/var/lib/postgresql/data
+      - membershipdbdata:/cockroach/cockroach-data
   adminer:
     image: adminer
     restart: always
     ports:
-      - 8080:8080
+      - 8081:8080
     networks:
       - membership-network      
 networks:
