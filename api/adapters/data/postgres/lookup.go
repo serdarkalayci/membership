@@ -39,3 +39,51 @@ func (lr LookupRepository) GetCities() ([]domain.City, error) {
 	}
 	return mappers.MapCitydaos2Cities(cities), nil
 }
+
+func (lr LookupRepository) GetAreas() ([]domain.Area, error) {
+	var areas []dao.Area
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	rows, err := lr.cp.Query(ctx, "SELECT id, name FROM areas")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	areas, err = pgx.CollectRows(rows, pgx.RowToStructByName[dao.Area])
+	if err != nil {
+		return nil, err
+	}
+	return mappers.MapAreadaos2Areas(areas), nil
+}
+
+func (lr LookupRepository) GetProvinces() ([]domain.Province, error) {
+	var provinces []dao.Province
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	rows, err := lr.cp.Query(ctx, "SELECT id, name FROM areas")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	provinces, err = pgx.CollectRows(rows, pgx.RowToStructByName[dao.Province])
+	if err != nil {
+		return nil, err
+	}
+	return mappers.MapProvincedaos2Provinces(provinces), nil
+}
+
+func (lr LookupRepository) GetMembershipTypes() ([]domain.MembershipType, error) {
+	var membershipTypes []dao.MembershipType
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	rows, err := lr.cp.Query(ctx, "SELECT id, name FROM areas")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	membershipTypes, err = pgx.CollectRows(rows, pgx.RowToStructByName[dao.MembershipType])
+	if err != nil {
+		return nil, err
+	}
+	return mappers.MapMembershipTypedaos2MembershipTypes(membershipTypes), nil
+}

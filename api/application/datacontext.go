@@ -6,12 +6,14 @@ type DataContextCarrier interface {
 	SetRepositories(ur UserRepository, mr MemberRepository)
 	GetUserRepository() UserRepository
 	GetMemberRepository() MemberRepository
+	GetLookupRepository() LookupRepository
 }
 
 // DataContext represents a struct that holds concrete repositories
 type DataContext struct {
 	userRepository         UserRepository
 	memberRepository       MemberRepository
+	lookupRepository       LookupRepository
 }
 
 // SetRepositories sets the repositories of the datacontext
@@ -28,4 +30,9 @@ func (dc *DataContext) GetUserRepository() UserRepository {
 // GetMemberRepository returns the member repository
 func (dc *DataContext) GetMemberRepository() MemberRepository {
 	return dc.memberRepository
+}
+
+// GetLookupRepository returns the lookup repository
+func (dc *DataContext) GetLookupRepository() LookupRepository {
+	return dc.lookupRepository
 }

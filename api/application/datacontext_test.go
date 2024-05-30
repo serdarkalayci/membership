@@ -4,6 +4,7 @@ package application
 type MockContext struct {
 	userRepository         UserRepository
 	MemberRepository	   MemberRepository
+	LookupRepository	   LookupRepository
 }
 
 func (mc *MockContext) SetRepositories(ur UserRepository, mr MemberRepository) {
@@ -16,4 +17,8 @@ func (mc *MockContext) GetUserRepository() UserRepository {
 
 func (mc *MockContext) GetMemberRepository() MemberRepository {
 	return mc.MemberRepository
+}
+
+func (mc *MockContext) GetLookupRepository() LookupRepository {
+	return mc.LookupRepository
 }
