@@ -3,7 +3,7 @@ package application
 
 // DataContextCarrier is the interface to be passed to the application layer
 type DataContextCarrier interface {
-	SetRepositories(ur UserRepository, mr MemberRepository)
+	SetRepositories(ur UserRepository, mr MemberRepository, lr LookupRepository)
 	GetUserRepository() UserRepository
 	GetMemberRepository() MemberRepository
 	GetLookupRepository() LookupRepository
@@ -17,9 +17,10 @@ type DataContext struct {
 }
 
 // SetRepositories sets the repositories of the datacontext
-func (dc *DataContext) SetRepositories(ur UserRepository, mr MemberRepository) {
+func (dc *DataContext) SetRepositories(ur UserRepository, mr MemberRepository, lr LookupRepository) {
 	dc.userRepository = ur
 	dc.memberRepository = mr
+	dc.lookupRepository = lr
 }
 
 // GetUserRepository returns the user repository

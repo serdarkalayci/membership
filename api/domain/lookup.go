@@ -4,6 +4,7 @@ package domain
 type City struct {
 	ID   string
 	Name string
+	Province Province
 }
 
 // Province is the struct that holds the province information

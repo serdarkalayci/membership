@@ -1,0 +1,3 @@
+    {{ range .Cities }}
+    <option value="{{ .ID }}" {{ if eq .ID $.Member.City.ID }}selected{{ end }}>{{ .Name }}</option>
+    {{ end }}

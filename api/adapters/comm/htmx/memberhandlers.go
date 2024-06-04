@@ -62,7 +62,32 @@ func (ws WebServer) EditMemberDetail(c *gin.Context) {
 		c.HTML(500, "memberedit.html", nil)
 		return
 	}
+	ls := application.NewLookupService(ws.dbContext)
+	provinces, err := ls.ListProvinces()
+	if err != nil {
+		c.HTML(500, "memberedit.html", nil)
+		return
+	}
+	cities, err := ls.ListProvinceCities(member.City.Province.ID)
+	if err != nil {
+		c.HTML(500, "memberedit.html", nil)
+		return
+	}
+	areas, err := ls.ListAreas()
+	if err != nil {
+		c.HTML(500, "memberedit.html", nil)
+		return
+	}
+	membershipTypes, err := ls.ListMembershipTypes()
+	if err != nil {
+		c.HTML(500, "memberedit.html", nil)
+		return
+	}
 	c.HTML(200, "memberedit.html", gin.H{
 		"Member": member,
+		"Cities": cities,
+		"Provinces": provinces,
+		"Areas": areas,
+		"MembershipTypes": membershipTypes,
 	})
 }

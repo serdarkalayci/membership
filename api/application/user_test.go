@@ -51,7 +51,7 @@ func (m mockUserRepository) ActivateUser(userID string) error {
 
 func TestGetUser(t *testing.T) {
 	mc := &MockContext{}
-	mc.SetRepositories(&mockUserRepository{}, nil)
+	mc.SetRepositories(&mockUserRepository{}, nil, nil)
 	us := NewUserService(mc)
 	getUserFunc = func(ID string) (domain.User, error) {
 		return domain.User{}, apperr.ErrUserNotFound{}
@@ -62,7 +62,7 @@ func TestGetUser(t *testing.T) {
 
 func TestCheckUser(t *testing.T) {
 	mc := &MockContext{}
-	mc.SetRepositories(&mockUserRepository{}, nil)
+	mc.SetRepositories(&mockUserRepository{}, nil, nil)
 	us := NewUserService(mc)
 	checkUserFunc = func(email string) (domain.User, error) {
 		return domain.User{}, apperr.ErrUserNotFound{}
@@ -117,7 +117,7 @@ func TestRandomString(t *testing.T) {
 
 func TestAddConfirmationCode(t *testing.T) {
 	mc := &MockContext{}
-	mc.SetRepositories(&mockUserRepository{}, nil)
+	mc.SetRepositories(&mockUserRepository{}, nil, nil)
 	us := NewUserService(mc)
 	addConfirmationCodeFunc = func(userID string, confirmationCode string) error {
 		return apperr.ErrUserNotFound{}
@@ -133,7 +133,7 @@ func TestAddConfirmationCode(t *testing.T) {
 
 func TestAddUser(t *testing.T) {
 	mc := &MockContext{}
-	mc.SetRepositories(&mockUserRepository{}, nil)
+	mc.SetRepositories(&mockUserRepository{}, nil, nil)
 	us := NewUserService(mc)
 	// First let's try to add a user with a weak password
 	addUserFunc = func(u domain.User) (string, error) {
@@ -169,7 +169,7 @@ func TestAddUser(t *testing.T) {
 
 func TestCheckConfirmationCode(t *testing.T) {
 	mc := &MockContext{}
-	mc.SetRepositories(&mockUserRepository{}, nil)
+	mc.SetRepositories(&mockUserRepository{}, nil, nil)
 	us := NewUserService(mc)
 	// First let's try to check confirmation code with a user that doesn't exist
 	checkConfirmationCodeFunc = func(userID string, confirmationCode string) error {

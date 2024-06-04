@@ -53,9 +53,10 @@ func (mr MemberRepository) GetMember(id string) (domain.Member, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	row, err := mr.cp.Query(ctx, `SELECT members.id as id, first_name, last_name, passive, email, 
-	phone, city_id, area_id, membership_type_id, membership_start_date, 
+	phone, provinces.id as province_id, city_id, area_id, membership_type_id, membership_start_date, 
 	last_contact_date, occupation, education, date_of_birth, COALESCE(notes, '') as notes,
-	cities.name as city_name, areas.name as area_name, membership_types.name as membership_type_name
+	provinces.name as province_name, cities.name as city_name, 
+	areas.name as area_name, membership_types.name as membership_type_name
 	FROM members INNER JOIN cities ON members.city_id = cities.id
 	INNER JOIN provinces ON cities.province_id = provinces.id
 	INNER JOIN areas ON members.area_id = areas.id
@@ -69,13 +70,4 @@ func (mr MemberRepository) GetMember(id string) (domain.Member, error) {
 		return domain.Member{}, err
 	}
 	return mappers.MapMemberdao2Member(member), nil
-	// var member dao.Member
-	// fmt.Println(mr.db.ToSQL(func(tx *gorm.DB) *gorm.DB {
-	// 	return tx.Joins("City").Joins("JOIN provinces on cities.province_id = provinces.id").Joins("Area").Joins("MembershipType").First(&member, "id = ?", id)
-	// }))
-	
-	// if err := mr.db.First(&member, "ID = ?", id).Preload("City").Joins("Area").Joins("MembershipType").Error; err != nil {
-	// 	return domain.Member{}, err
-	// }
-	// return mappers.MapMemberdao2Member(member), nil
 }

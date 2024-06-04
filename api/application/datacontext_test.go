@@ -7,7 +7,7 @@ type MockContext struct {
 	LookupRepository	   LookupRepository
 }
 
-func (mc *MockContext) SetRepositories(ur UserRepository, mr MemberRepository) {
+func (mc *MockContext) SetRepositories(ur UserRepository, mr MemberRepository, lr LookupRepository) {
 	mc.userRepository = ur
 }
 

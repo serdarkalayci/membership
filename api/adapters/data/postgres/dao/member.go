@@ -14,6 +14,8 @@ type Member struct {
   Passive              bool          `db:"passive"`
   Email                string        `db:"email"`
   Phone                string        `db:"phone"`
+  ProvinceID           int           `db:"province_id"`
+  ProvinceName         string        `db:"province_name"`
   CityID               int           `db:"city_id"`
   CityName             string        `db:"city_name"`
   AreaID               int           `db:"area_id"`

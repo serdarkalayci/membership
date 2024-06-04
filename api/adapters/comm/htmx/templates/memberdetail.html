@@ -2,56 +2,60 @@
     <div id="detail-show" hx-target="this" hx-swap="outerHTML">
     <table>
         <tr>
-            <td>Email:</td>
+            <td>E-Posta:</td>
             <td>{{ .Member.Email }}</td>
         </tr>
         <tr>
-            <td>First Name:</td>
+            <td>Ad:</td>
             <td>{{ .Member.FirstName }}</td>
         </tr>
         <tr>
-            <td>Last Name:</td>
+            <td>Soyad:</td>
             <td>{{ .Member.LastName }}</td>
         </tr>
         <tr>
-            <td>City:</td>
+            <td>Eyalet:</td>
+            <td>{{ .Member.City.Province.Name }}</td>
+        </tr>
+        <tr>
+            <td>Şehir:</td>
             <td>{{ .Member.City.Name }}</td>
         </tr>
         <tr>
-            <td>Area:</td>
+            <td>Bölge:</td>
             <td>{{ .Member.Area.Name }}</td>
         </tr>
         <tr>
-            <td>Phone:</td>
+            <td>Telefon:</td>
             <td>{{ .Member.Phone }}</td>
         </tr>
         <tr>
-            <td>Notes:</td>
+            <td>Notlar:</td>
             <td>{{ .Member.Notes }}</td>
         </tr>
         <tr>
-            <td>Membership Type:</td>
+            <td>Üyelik Tipi:</td>
             <td>{{ .Member.MembershipType.Name }}</td>
         </tr>
         <tr>
-            <td>Membership Start Date:</td>
-            <td>{{ .Member.MembershipStartDate }}</td>
+            <td>Üyelik Başlangıç:</td>
+            <td>{{ .Member.MembershipStartDate.Format "2006-01-02" }}</td>
         </tr>
         <tr>
-            <td>Last Contact Date:</td>
-            <td>{{ .Member.LastContactDate }}</td>
+            <td>Son Temas Tarihi:</td>
+            <td>{{ .Member.LastContactDate.Format "2006-01-02" }}</td>
         </tr>
         <tr>
-            <td>Occupation:</td>
+            <td>Meslek:</td>
             <td>{{ .Member.Occupation }}</td>
         </tr>
         <tr>
-            <td>Education:</td>
+            <td>Eğitim:</td>
             <td>{{ .Member.Education }}</td>
         </tr>
         <tr>
-            <td>Date of Birth:</td>
-            <td>{{ .Member.DateOfBirth }}</td>
+            <td>Doğum Tarihi:</td>
+            <td>{{ .Member.DateOfBirth.Format "2006-01-02" }}</td>
         </tr>
     </table>
     <button hx-get="/member/{{ .Member.ID }}/edit" class="btn btn-primary">

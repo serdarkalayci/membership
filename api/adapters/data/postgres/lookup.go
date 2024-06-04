@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"context"
+	"strconv"
 	"time"
 
 	"github.com/jackc/pgx/v5"
@@ -24,11 +25,11 @@ func newLookupRepository(pool *pgxpool.Pool, databaseName string) LookupReposito
 	}
 }
 
-func (lr LookupRepository) GetCities() ([]domain.City, error) {
+func (lr LookupRepository) ListCities() ([]domain.City, error) {
 	var cities []dao.City
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	rows, err := lr.cp.Query(ctx, "SELECT id, name FROM cities")
+	rows, err := lr.cp.Query(ctx, "SELECT cities.id as id, cities.name as name, province_id, provinces.name as province_name FROM cities INNER JOIN provinces ON cities.province_id = provinces.id")
 	if err != nil {
 		return nil, err
 	}
@@ -40,7 +41,24 @@ func (lr LookupRepository) GetCities() ([]domain.City, error) {
 	return mappers.MapCitydaos2Cities(cities), nil
 }
 
-func (lr LookupRepository) GetAreas() ([]domain.Area, error) {
+func (lr LookupRepository) ListProvinceCities(provinceID string) ([]domain.City, error) {
+	var cities []dao.City
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	id, _ := strconv.Atoi(provinceID)
+	rows, err := lr.cp.Query(ctx, "SELECT cities.id as id, cities.name as name, province_id, provinces.name as province_name FROM cities INNER JOIN provinces ON cities.province_id = provinces.id WHERE cities.province_id = $1", id)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	cities, err = pgx.CollectRows(rows, pgx.RowToStructByName[dao.City])
+	if err != nil {
+		return nil, err
+	}
+	return mappers.MapCitydaos2Cities(cities), nil
+}
+
+func (lr LookupRepository) ListAreas() ([]domain.Area, error) {
 	var areas []dao.Area
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -56,11 +74,11 @@ func (lr LookupRepository) GetAreas() ([]domain.Area, error) {
 	return mappers.MapAreadaos2Areas(areas), nil
 }
 
-func (lr LookupRepository) GetProvinces() ([]domain.Province, error) {
+func (lr LookupRepository) ListProvinces() ([]domain.Province, error) {
 	var provinces []dao.Province
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	rows, err := lr.cp.Query(ctx, "SELECT id, name FROM areas")
+	rows, err := lr.cp.Query(ctx, "SELECT id, name FROM provinces")
 	if err != nil {
 		return nil, err
 	}
@@ -72,11 +90,11 @@ func (lr LookupRepository) GetProvinces() ([]domain.Province, error) {
 	return mappers.MapProvincedaos2Provinces(provinces), nil
 }
 
-func (lr LookupRepository) GetMembershipTypes() ([]domain.MembershipType, error) {
+func (lr LookupRepository) ListMembershipTypes() ([]domain.MembershipType, error) {
 	var membershipTypes []dao.MembershipType
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	rows, err := lr.cp.Query(ctx, "SELECT id, name FROM areas")
+	rows, err := lr.cp.Query(ctx, "SELECT id, name FROM membership_types")
 	if err != nil {
 		return nil, err
 	}

@@ -8,6 +8,7 @@ import (
 // LookupRepository is the interface to interact with Lookup objects
 type LookupRepository interface {
 	ListCities() ([]domain.City, error)
+	ListProvinceCities(provinceID string) ([]domain.City, error)
 	ListAreas() ([]domain.Area, error)
 	ListProvinces() ([]domain.Province, error)
 	ListMembershipTypes() ([]domain.MembershipType, error)	
@@ -28,6 +29,11 @@ func NewLookupService(dc DataContextCarrier) LookupService {
 // ListCities simply returns the whole list of cities or an error that is returned from the repository
 func (ls LookupService) ListCities() ([]domain.City, error) {
 	return ls.dc.GetLookupRepository().ListCities()
+}
+
+// ListProvinceCities simply returns the whole list of cities in the given province or an error that is returned from the repository
+func (ls LookupService) ListProvinceCities(provinceID string) ([]domain.City, error) {
+	return ls.dc.GetLookupRepository().ListProvinceCities(provinceID)
 }
 
 // ListAreas simply returns the whole list of areas or an error that is returned from the repository

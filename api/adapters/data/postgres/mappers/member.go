@@ -1,6 +1,7 @@
 package mappers
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/google/uuid"
@@ -11,15 +12,19 @@ import (
 // MapMemberdao2Member maps a member dao to a member domain object
 func MapMemberdao2Member(daoMember dao.Member) domain.Member {
 	city := domain.City{
-		ID:   string(daoMember.CityID),
+		ID:   fmt.Sprintf("%d", daoMember.CityID),
 		Name: daoMember.CityName,
+		Province: domain.Province{
+			ID:   fmt.Sprintf("%d", daoMember.ProvinceID),
+			Name: daoMember.ProvinceName,
+		},
 	}
 	area := domain.Area{
-		ID:   string(daoMember.AreaID),
+		ID:   fmt.Sprintf("%d", daoMember.AreaID),
 		Name: daoMember.AreaName,
 	}
 	membershipType := domain.MembershipType{
-		ID:   string(daoMember.MembershipTypeID),
+		ID:   fmt.Sprintf("%d", daoMember.MembershipTypeID),
 		Name: daoMember.MembershipTypeName,
 	}
 	member := domain.Member{
@@ -77,7 +82,7 @@ func MapMember2Memberdao(member domain.Member) dao.Member {
 // MapListMemberdao2Member maps a list member dao to a member domain object
 func MapListMemberdao2Member(daoMember *dao.ListMember) domain.Member {
 	city := domain.City{
-		ID:   string(daoMember.CityID),
+		ID:   fmt.Sprintf("%d", daoMember.CityID),
 		Name: daoMember.CityName,
 	}
 	member := domain.Member{

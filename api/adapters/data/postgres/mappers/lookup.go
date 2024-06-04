@@ -1,6 +1,7 @@
 package mappers
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/serdarkalayci/membership/api/adapters/data/postgres/dao"
@@ -10,8 +11,12 @@ import (
 // MapCitydao2City maps a city dao to a city domain object
 func MapCitydao2City(daoCity dao.City) domain.City {
 	city := domain.City{
-		ID:   string(daoCity.ID),
+		ID:   fmt.Sprintf("%d", daoCity.ID),
 		Name: daoCity.Name,
+		Province: domain.Province{
+			ID:   fmt.Sprintf("%d", daoCity.ProvinceID),
+			Name: daoCity.ProvinceName,
+		},	
 	}
 	return city
 }
@@ -50,7 +55,7 @@ func MapCities2Citydaos(cities []domain.City) []dao.City {
 // MapProvincedao2Province maps a province dao to a province domain object
 func MapProvincedao2Province(daoProvince dao.Province) domain.Province {
 	province := domain.Province{
-		ID:   string(daoProvince.ID),
+		ID:   fmt.Sprintf("%d", daoProvince.ID),
 		Name: daoProvince.Name,
 	}
 	return province
@@ -90,7 +95,7 @@ func MapProvinces2Provincedaos(provinces []domain.Province) []dao.Province {
 // MapAreadao2Area maps an area dao to an area domain object
 func MapAreadao2Area(daoArea dao.Area) domain.Area {
 	area := domain.Area{
-		ID:   string(daoArea.ID),
+		ID:   fmt.Sprintf("%d", daoArea.ID),
 		Name: daoArea.Name,
 	}
 	return area
@@ -130,7 +135,7 @@ func MapAreas2Areadaos(areas []domain.Area) []dao.Area {
 // MapMembershipTypedao2MembershipType maps a membership type dao to a membership type domain object
 func MapMembershipTypedao2MembershipType(daoMembershipType dao.MembershipType) domain.MembershipType {
 	membershipType := domain.MembershipType{
-		ID:   string(daoMembershipType.ID),
+		ID:   fmt.Sprintf("%d", daoMembershipType.ID),
 		Name: daoMembershipType.Name,
 	}
 	return membershipType

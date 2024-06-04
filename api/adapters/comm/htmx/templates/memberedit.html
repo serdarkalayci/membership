@@ -1,56 +1,84 @@
 <form hx-put="/member/{{ .Member.ID }}" hx-target="this" hx-swap="outerHTML">
     <table>
         <tr>
-            <td>Email:</td>
-            <td>{{ .Member.Email }}</td>
+            <td>E-Posta:</td>
+            <td><input type="email" name="email" value="{{ .Member.Email }}"></td>
         </tr>
         <tr>
-            <td>First Name:</td>
+            <td>Ad:</td>
             <td><input type="text" name="firstName" value="{{ .Member.FirstName }}"></td>
         </tr>
         <tr>
-            <td>Last Name:</td>
+            <td>Soyad:</td>
             <td><input type="text" name="lastName" value="{{ .Member.LastName }}"></td>
         </tr>
         <tr>
-            <td>City:</td>
-            <td>{{ .Member.City }}</td>
+            <td>Eyalet:</td>
+            <td>
+                <select name="province" hx-on:change="htmx.ajax('GET', '/cities?provinceId=' + this.options[this.selectedIndex].value, '#memberedit-city')" hx-target="#memberedit-city" hx-swap="innerHTML">
+                {{ range .Provinces }}
+                <option value="{{ .ID }}" {{ if eq .ID $.Member.City.Province.ID }}selected{{ end }}>{{ .Name }}</option>
+                {{ end }}
+            </select>
+            </td>
         </tr>
         <tr>
-            <td>Area:</td>
-            <td>{{ .Member.Area }}</td>
+            <td>Şehir:</td>
+            <td>
+                <select id="memberedit-city" name="city">
+                    {{ range .Cities }}
+                    <option value="{{ .ID }}" {{ if eq .ID $.Member.City.ID }}selected{{ end }}>{{ .Name }}</option>
+                    {{ end }}
+                </select>
+            </td>
         </tr>
         <tr>
-            <td>Phone:</td>
-            <td>{{ .Member.Phone }}</td>
+            <td>Bölge:</td>
+            <td>
+                <select name="area">
+                    {{ range .Areas }}
+                    <option value="{{ .ID }}" {{ if eq .ID $.Member.Area.ID }}selected{{ end }}>{{ .Name }}</option>
+                    {{ end }}
+                </select>
+            </td>
         </tr>
         <tr>
-            <td>Notes:</td>
-            <td>{{ .Member.Notes }}</td>
+            <td>Telefon:</td>
+            <td><input type="tel" name="phone" value="{{ .Member.Phone }}"></td>
         </tr>
         <tr>
-            <td>Membership Type:</td>
-            <td>{{ .Member.MembershipType }} </td>
+            <td>Notlar:</td>
+            <td><textarea name="notes">{{ .Member.Notes }}</textarea></td>
         </tr>
         <tr>
-            <td>Membership Start Date:</td>
-            <td>{{ .Member.MembershipStartDate }}</td>
+            <td>Üyelik Tipi:</td>
+            <td>
+                <select name="membership-type">
+                    {{ range .MembershipTypes }}
+                    <option value="{{ .ID }}" {{ if eq .ID $.Member.MembershipType.ID }}selected{{ end }}>{{ .Name }}</option>
+                    {{ end }}
+                </select>
+            </td>
         </tr>
         <tr>
-            <td>Last Contact Date:</td>
-            <td>{{ .Member.LastContactDate }}</td>
+            <td>Üyelik Başlangıç:</td>
+            <td><input type="date" name="membership-start-date" value='{{ .Member.MembershipStartDate.Format "2006-01-02" }}'></td>
         </tr>
         <tr>
-            <td>Occupation:</td>
-            <td>{{ .Member.Occupation }}</td>
+            <td>Son Temas Tarihi:</td>
+            <td><input type="date" name="last-contact-date" value='{{ .Member.LastContactDate.Format "2006-01-02" }}'></td>
         </tr>
         <tr>
-            <td>Education:</td>
-            <td>{{ .Member.Education }}</td>
+            <td>Meslek:</td>
+            <td><input type="text" name="occupation" value="{{ .Member.Occupation }}"></td>
         </tr>
         <tr>
-            <td>Date of Birth:</td>
-            <td>{{ .Member.DateOfBirth }}</td>
+            <td>Eğitim:</td>
+            <td><input type="text" name="education" value="{{ .Member.Education }}"></td>
+        </tr>
+        <tr>
+            <td>Doğum Tarihi:</td>
+            <td><input type="date" name="birthdate" value='{{ .Member.DateOfBirth.Format "2006-01-02" }}'></td>
         </tr>
     </table>
     <button class="btn">Submit</button>

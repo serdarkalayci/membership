@@ -50,6 +50,7 @@ func NewDataContext() (*application.DataContext, error) {
 	dataContext := application.DataContext{}
 	uRepo := newUserRepository(dbPool, *databaseName)
 	mRepo := newMemberRepository(dbPool, *databaseName)
-	dataContext.SetRepositories(uRepo, mRepo)
+	lRepo := newLookupRepository(dbPool, *databaseName)
+	dataContext.SetRepositories(uRepo, mRepo, lRepo)
 	return &dataContext, nil
 }
