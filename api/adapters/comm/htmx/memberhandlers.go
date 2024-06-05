@@ -2,6 +2,7 @@ package htmx
 
 import (
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/serdarkalayci/membership/api/application"
@@ -90,4 +91,29 @@ func (ws WebServer) EditMemberDetail(c *gin.Context) {
 		"Areas": areas,
 		"MembershipTypes": membershipTypes,
 	})
+}
+
+func (ws WebServer) UpdateMember(c *gin.Context) {
+	id := c.Param("id")
+	ms := application.NewMemberService(ws.dbContext)
+	member, err := ms.GetMember(id)
+	if err != nil {
+		c.HTML(500, "memberedit.html", nil)
+		return
+	}
+	member.Email = c.PostForm("email")
+	member.FirstName = c.PostForm("firstName")
+	member.LastName = c.PostForm("lastName")
+	member.City.ID = c.PostForm("city")
+	member.Area.ID = c.PostForm("area")
+	member.Phone = c.PostForm("phone")
+	member.Notes = c.PostForm("notes")
+	member.MembershipType.ID = c.PostForm("membershipType")
+	member.MembershipStartDate, _ = time.Parse("2006-01-022", c.PostForm("membershipStartDate"))
+	member.LastContactDate, _ = time.Parse("2006-01-022", c.PostForm("lastContactDate"))
+	member.Occupation = c.PostForm("occupation")
+	member.Education = c.PostForm("education")
+	member.DateOfBirth, _ = time.Parse("2006-01-022", c.PostForm("dateOfBirth"))
+	ms.UpdateMember(member)
+	c.Redirect(303, "/memberpage")
 }

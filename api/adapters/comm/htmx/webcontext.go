@@ -18,6 +18,7 @@ func SetWebRoutes(engine *gin.Engine, dbContext *application.DataContext) {
 	engine.GET("/memberpage", ws.GetMemberPage)
 	engine.GET("/member", ws.GetMemberList)
 	engine.GET("/member/:id", ws.GetMemberDetail)
+	engine.PUT("/member/:id", ws.UpdateMember)
 	engine.GET("/member/:id/edit", ws.EditMemberDetail)
 	engine.GET("/cities", ws.GetCities)
 }

@@ -53,7 +53,7 @@
         <tr>
             <td>Üyelik Tipi:</td>
             <td>
-                <select name="membership-type">
+                <select name="membershipType">
                     {{ range .MembershipTypes }}
                     <option value="{{ .ID }}" {{ if eq .ID $.Member.MembershipType.ID }}selected{{ end }}>{{ .Name }}</option>
                     {{ end }}
@@ -62,11 +62,11 @@
         </tr>
         <tr>
             <td>Üyelik Başlangıç:</td>
-            <td><input type="date" name="membership-start-date" value='{{ .Member.MembershipStartDate.Format "2006-01-02" }}'></td>
+            <td><input type="date" name="membershipStartDate" value='{{ .Member.MembershipStartDate.Format "2006-01-02" }}'></td>
         </tr>
         <tr>
             <td>Son Temas Tarihi:</td>
-            <td><input type="date" name="last-contact-date" value='{{ .Member.LastContactDate.Format "2006-01-02" }}'></td>
+            <td><input type="date" name="lastContactDate" value='{{ .Member.LastContactDate.Format "2006-01-02" }}'></td>
         </tr>
         <tr>
             <td>Meslek:</td>
@@ -78,9 +78,9 @@
         </tr>
         <tr>
             <td>Doğum Tarihi:</td>
-            <td><input type="date" name="birthdate" value='{{ .Member.DateOfBirth.Format "2006-01-02" }}'></td>
+            <td><input type="date" name="dateOfBirth" value='{{ .Member.DateOfBirth.Format "2006-01-02" }}'></td>
         </tr>
     </table>
-    <button class="btn">Submit</button>
+    <button class="btn" hx-put="/member/{{ .Member.ID }}">Submit</button>
     <button class="btn" hx-get="/member/{{ .Member.ID }}">Cancel</button>
 </form>

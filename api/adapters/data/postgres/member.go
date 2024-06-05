@@ -71,3 +71,17 @@ func (mr MemberRepository) GetMember(id string) (domain.Member, error) {
 	}
 	return mappers.MapMemberdao2Member(member), nil
 }
+
+func (mr MemberRepository) UpdateMember(member domain.Member) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	_, err := mr.cp.Exec(ctx, `UPDATE members SET first_name = $1, last_name = $2, email = $3, phone = $4, 
+	city_id = $5, area_id = $6, membership_type_id = $7, membership_start_date = $8, last_contact_date = $9, 
+	occupation = $10, education = $11, date_of_birth = $12, notes = $13 WHERE id = $14`,
+		member.FirstName, member.LastName, member.Email, member.Phone, member.City.ID, member.Area.ID, member.MembershipType.ID,
+		member.MembershipStartDate, member.LastContactDate, member.Occupation, member.Education, member.DateOfBirth, member.Notes, member.ID)
+	if err != nil {
+		return err
+	}
+	return nil
+}
