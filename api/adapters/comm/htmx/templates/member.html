@@ -19,6 +19,12 @@
     hx-swap="innerHTML">Yeni Üye</button>
     <div class="container">
         <div class="column-left">
+            <input type="text" id="searchname" name="searchname" placeholder="isimde Ara..."
+            hx-get="/member"
+            hx-trigger="keyup"
+            hx-target="#memberlist"
+            hx-swap="innerHTML"
+            >
             <p id="memberlist"></p>
         </div>
         <div id="memberdetail" class="column-right">

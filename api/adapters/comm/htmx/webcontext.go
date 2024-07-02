@@ -22,9 +22,8 @@ func SetWebRoutes(engine *gin.Engine, dbContext *application.DataContext) {
 	if err != nil {
 		log.Fatal().Err(err).Msg("Error while getting current path")
 	}
-	// currentPath = "./adapters/comm/htmxq"
+	currentPath = "./adapters/comm/htmx"	
 	engine.Static("/assets", path.Join(currentPath, "assets"))
-	// templatePath := path.Join(currentPath, "templates", "*")
 	engine.LoadHTMLGlob(path.Join(currentPath, "templates", "*"))
 	engine.GET("/memberpage", ws.GetMemberPage)
 	engine.GET("/member", ws.GetMemberList)

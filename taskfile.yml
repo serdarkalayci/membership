@@ -1,6 +1,11 @@
 version: '3'
-
 tasks:
+  docker-dev-up:
+    cmds:
+      - docker-compose -f docker-compose-dev.yaml up -d
+  docker-dev-down:
+    cmds:
+      - docker-compose -f docker-compose-dev.yaml down
   docker-build:
     cmds:
       - docker build --platform linux/amd64 -t serdarkalayci/membership:{{.VERSION}} ./api/.

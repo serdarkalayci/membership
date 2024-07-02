@@ -19,6 +19,7 @@ func (ws WebServer) GetMemberPage(c *gin.Context) {
 func (ws WebServer) GetMemberList(c *gin.Context) {
 	pageSize := 10
 	pageNum := 1
+	searchName := c.Query("searchname")
 	if c.Query("pageSize") != "" {
 		size, err := strconv.Atoi(c.Query("pageSize")); if err == nil {
 			pageSize = size
@@ -30,7 +31,7 @@ func (ws WebServer) GetMemberList(c *gin.Context) {
 		}
 	}
 	ms := application.NewMemberService(ws.dbContext)
-	members, count, err := ms.ListMembers(pageSize, pageNum)
+	members, count, err := ms.ListMembers(pageSize, pageNum, searchName)
 
 	if err != nil {
 		log.Error().Err(err).Msg("Error while listing members")
