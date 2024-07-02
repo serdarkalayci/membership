@@ -1,0 +1,8 @@
+FROM cockroachdb/cockroach:latest
+
+# Copy the initialization scripts to the container
+COPY init /docker-entrypoint-initdb.d
+
+# Set the entrypoint command
+ENTRYPOINT ["/cockroach/cockroach.sh"]
+CMD ["start-single-node"]

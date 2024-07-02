@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/serdarkalayci/membership/api/adapters/data/postgres/dao"
@@ -84,4 +85,19 @@ func (mr MemberRepository) UpdateMember(member domain.Member) error {
 		return err
 	}
 	return nil
+}
+
+func (mr MemberRepository) CreateMember(member domain.Member) (string, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	var id string
+	id = uuid.New().String()
+	err := mr.cp.QueryRow(ctx, `INSERT INTO members (id, first_name, last_name, email, phone, city_id, area_id, membership_type_id, 
+	membership_start_date, last_contact_date, occupation, education, date_of_birth, notes) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING id`,
+		id, member.FirstName, member.LastName, member.Email, member.Phone, member.City.ID, member.Area.ID, member.MembershipType.ID,
+		member.MembershipStartDate, member.LastContactDate, member.Occupation, member.Education, member.DateOfBirth, member.Notes).Scan(&id)
+	if err != nil {
+		return "", err
+	}
+	return id, nil
 }

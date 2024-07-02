@@ -1,0 +1,85 @@
+<form hx-post="/member" hx-target="this" hx-swap="outerHTML">
+    <table>
+        <tr>
+            <td>E-Posta:</td>
+            <td><input type="email" name="email"></td>
+        </tr>
+        <tr>
+            <td>Ad:</td>
+            <td><input type="text" name="firstName"></td>
+        </tr>
+        <tr>
+            <td>Soyad:</td>
+            <td><input type="text" name="lastName"></td>
+        </tr>
+        <tr>
+            <td>Eyalet:</td>
+            <td>
+                <select name="province" hx-on:change="htmx.ajax('GET', '/cities?provinceId=' + this.options[this.selectedIndex].value, '#memberedit-city')" hx-target="#memberedit-city" hx-swap="innerHTML">
+                {{ range .Provinces }}
+                <option value="{{ .ID }}">{{ .Name }}</option>
+                {{ end }}
+            </select>
+            </td>
+        </tr>
+        <tr>
+            <td>Şehir:</td>
+            <td>
+                <select id="memberedit-city" name="city">
+                    {{ range .Cities }}
+                    <option value="{{ .ID }}">{{ .Name }}</option>
+                    {{ end }}
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>Bölge:</td>
+            <td>
+                <select name="area">
+                    {{ range .Areas }}
+                    <option value="{{ .ID }}">{{ .Name }}</option>
+                    {{ end }}
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>Telefon:</td>
+            <td><input type="tel" name="phone"></td>
+        </tr>
+        <tr>
+            <td>Notlar:</td>
+            <td><textarea name="notes"></textarea></td>
+        </tr>
+        <tr>
+            <td>Üyelik Tipi:</td>
+            <td>
+                <select name="membershipType">
+                    {{ range .MembershipTypes }}
+                    <option value="{{ .ID }}">{{ .Name }}</option>
+                    {{ end }}
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>Üyelik Başlangıç:</td>
+            <td><input type="date" name="membershipStartDate"></td>
+        </tr>
+        <tr>
+            <td>Son Temas Tarihi:</td>
+            <td><input type="date" name="lastContactDate"></td>
+        </tr>
+        <tr>
+            <td>Meslek:</td>
+            <td><input type="text" name="occupation"></td>
+        </tr>
+        <tr>
+            <td>Eğitim:</td>
+            <td><input type="text" name="education"></td>
+        </tr>
+        <tr>
+            <td>Doğum Tarihi:</td>
+            <td><input type="date" name="dateOfBirth"></td>
+        </tr>
+    </table>
+    <button class="btn" hx-post="/member">Submit</button>
+</form>

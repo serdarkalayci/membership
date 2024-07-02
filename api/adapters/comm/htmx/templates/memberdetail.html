@@ -39,11 +39,11 @@
         </tr>
         <tr>
             <td>Üyelik Başlangıç:</td>
-            <td>{{ .Member.MembershipStartDate.Format "2006-01-02" }}</td>
+            <td>{{ .Member.MembershipStartDate.Format "01/02/2006" }}</td>
         </tr>
         <tr>
             <td>Son Temas Tarihi:</td>
-            <td>{{ .Member.LastContactDate.Format "2006-01-02" }}</td>
+            <td>{{ .Member.LastContactDate.Format "01/02/2006" }}</td>
         </tr>
         <tr>
             <td>Meslek:</td>
@@ -55,7 +55,7 @@
         </tr>
         <tr>
             <td>Doğum Tarihi:</td>
-            <td>{{ .Member.DateOfBirth.Format "2006-01-02" }}</td>
+            <td>{{ .Member.DateOfBirth.Format "01/02/2006" }}</td>
         </tr>
     </table>
     <button hx-get="/member/{{ .Member.ID }}/edit" class="btn btn-primary">

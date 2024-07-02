@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: membership-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: membership-db
+  template:
+    metadata:
+      labels:
+        app: membership-db
+    spec:
+      containers:
+      - name: membership-db
+        image: serdarkalayci/membership-db:0.2
+        command: ["/cockroach/cockroach"]
+        args: ["start-single-node", "--insecure", "--advertise-addr=membership-db-service"]
+        ports:
+        - containerPort: 8080
+        - containerPort: 26257        
+        env:
+        - name: COCKROACH_DATABASE
+          value: defaultdb
+        - name: COCKROACH_USER
+          value: membershipuser
+        - name: COCKROACH_PASSWORD
+          value: membershippassword
+        resources:
+          limits:
+            cpu: "2"
+            memory: "1Gi"
+          requests:
+            cpu: "1"
+            memory: "512Mi"
+        volumeMounts:
+        - name: db-volume
+          mountPath: /cockroach/cockroach-data
+        - name: init-volume
+          mountPath: /docker-entrypoint-initdb.d
+      volumes:
+      - name: db-volume
+        persistentVolumeClaim:
+          claimName: membership-db-pvc
+      - name: init-volume
+        configMap:
+          name: membership-db-initial-data
+

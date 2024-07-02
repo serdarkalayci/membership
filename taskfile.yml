@@ -1,0 +1,26 @@
+version: '3'
+
+tasks:
+  docker-build:
+    cmds:
+      - docker build --platform linux/amd64 -t serdarkalayci/membership:{{.VERSION}} ./api/.
+    vars:
+      VERSION: 
+        sh: cat version
+  docker-push:
+    cmds:
+      - task: docker-build
+      - docker push serdarkalayci/membership:{{.VERSION}}
+    vars:
+      VERSION: 
+        sh: cat version      
+  db-docker-build:
+    cmds:
+      - docker build --platform linux/amd64 -t serdarkalayci/membership-db:0.2 ./database/.
+  db-docker-push:
+    cmds:
+      - task: db-docker-build
+      - docker push serdarkalayci/membership-db:0.2
+  connect-db:
+    cmds:
+      - kubectl create -f https://raw.githubusercontent.com/cockroachdb/cockroach-operator/v2.14.0/examples/client-secure-operator.yaml

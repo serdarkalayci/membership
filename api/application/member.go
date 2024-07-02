@@ -10,6 +10,7 @@ type MemberRepository interface {
 	ListMembers(pageSize, pageNum int) ([]domain.Member, int, error)
 	GetMember(id string) (domain.Member, error)
 	UpdateMember(member domain.Member) error
+	CreateMember(member domain.Member) (string, error)
 }
 
 // MemberService is the struct to let outer layers to interact to the Member Applicatopn
@@ -46,4 +47,9 @@ func (ms MemberService) GetMember(id string) (domain.Member, error) {
 // UpdateMember simply updates the member with the given id or an error that is returned from the repository
 func (ms MemberService) UpdateMember(member domain.Member) error {
 	return ms.dc.GetMemberRepository().UpdateMember(member)
+}
+
+// CreateMember simply creates a new member with the given data or an error that is returned from the repository
+func (ms MemberService) CreateMember(member domain.Member) (string, error) {
+	return ms.dc.GetMemberRepository().CreateMember(member)
 }

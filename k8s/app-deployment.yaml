@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: membership-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: membership-app
+  template:
+    metadata:
+      labels:
+        app: membership-app
+    spec:
+      containers:
+      - name: membership-app
+        image: serdarkalayci/membership:0.3
+        ports:
+        - containerPort: 5555
+        env:
+        - name: DB_PASSWORD
+          value: "membershippassword"
+        - name: DB_USER
+          value: "membershipuser"
+        - name: DB_HOST
+          value: "membership-db"
+        - name: DB_PORT
+          value: "26257"
+        - name: DB_NAME
+          value: "membership"
+        - name: BASE_URL
+          value: ":5555"
+        resources:
+          limits:
+            cpu: "1"
+            memory: "512Mi"
+          requests:
+            cpu: "0.5"
+            memory: "256Mi"
