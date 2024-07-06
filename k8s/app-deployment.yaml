@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: membership-app
-        image: serdarkalayci/membership:0.3
+        image: serdarkalayci/membership:0.6
         ports:
         - containerPort: 5555
         env:
@@ -30,6 +30,8 @@ spec:
           value: "membership"
         - name: BASE_URL
           value: ":5555"
+        - name: BASE_PATH
+          value: "./"
         resources:
           limits:
             cpu: "1"

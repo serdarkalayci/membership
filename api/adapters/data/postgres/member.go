@@ -26,12 +26,14 @@ func newMemberRepository(pool *pgxpool.Pool, databaseName string) MemberReposito
 	}
 }
 
-func (mr MemberRepository) ListMembers(pageSize, pageNum int, searchName string) ([]domain.Member, int, error) {
+func (mr MemberRepository) ListMembers(pageSize, pageNum int, searchName string, searchCity int, searchAre int) ([]domain.Member, int, error) {
 	var listmembers []dao.ListMember
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	query := "SELECT members.id, first_name, last_name, email, phone, city_id, cities.name AS city_name from members INNER JOIN cities ON members.city_id = cities.id"
-	query = fmt.Sprintf("%s WHERE first_name ILIKE '%%%s%%' OR last_name ILIKE '%%%s%%'", query, searchName, searchName)
+	query = fmt.Sprintf("%s WHERE (first_name ILIKE '%%%s%%' OR last_name ILIKE '%%%s%%')", query, searchName, searchName)
+	query = fmt.Sprintf("%s AND (city_id = %d OR %d = 0)", query, searchCity, searchCity)
+	query = fmt.Sprintf("%s AND (area_id = %d OR %d = 0)", query, searchAre, searchAre)
 	offset := (pageNum - 1) * pageSize
 	query = fmt.Sprintf("%s ORDER BY members.id LIMIT %d OFFSET %d", query, pageSize, offset)
 	rows, err := mr.cp.Query(ctx, query)

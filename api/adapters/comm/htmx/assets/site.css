@@ -1,6 +1,10 @@
 /* Styles for member page */
 
-div {
+.top-form {
+    display: ruby;
+}
+
+.column-left div {
     background-color:#D1D8C5;
     color:#7E8EF1;
     font-family: open-sans, Verdana, Geneva, Tahoma, sans-serif;
@@ -78,7 +82,7 @@ button {
 }
 
 .container {
-    background-color:#2E4272;
+    background-color:#dde2d4;
     display:flex;
 }
 .column-left {

@@ -92,7 +92,7 @@ func (rs *RestServer)getMembers(c *gin.Context) {
 		}
 	}
 	ms := application.NewMemberService(rs.dbContext)
-	members, _, err := ms.ListMembers(pageSize, pageNum, "")
+	members, _, err := ms.ListMembers(pageSize, pageNum, "", 0, 0)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

@@ -9,22 +9,33 @@
 </head>
 <body>
     <h1>{{ .title }}</h1>
-    <button hx-get="/member"
-    hx-trigger="click"
-    hx-target="#memberlist"
-    hx-swap="innerHTML">Liste</button>
-    <button hx-get="/memberform"
-    hx-trigger="click"
-    hx-target="#memberlist"
-    hx-swap="innerHTML">Yeni Üye</button>
+    <div class="top-form">
+        <form id="membersearch" hx-get="/member" hx-target="#memberlist"
+        hx-swap="innerHTML">
+            <input type="text" id="searchname" name="searchname" placeholder="isimde Ara..."
+                hx-trigger="keyup"
+            />
+            <select id="searchcity" name="searchcity">
+                <option value="">Şehir Seçiniz</option>
+                {{ range .Cities }}
+                <option value="{{ .ID }}">{{ .Name }}</option>
+                {{ end }}
+            </select>
+            <select id="searcharea" name="searcharea">
+                <option value="">Bölge Seçiniz</option>
+                {{ range .Areas }}
+                <option value="{{ .ID }}">{{ .Name }}</option>
+                {{ end }}
+            </select>
+            <button type="submit">Liste</button>
+        </form>
+        <button hx-get="/memberform"
+        hx-trigger="click"
+        hx-target="#memberlist"
+        hx-swap="innerHTML">Yeni Üye</button>
+    </div>
     <div class="container">
         <div class="column-left">
-            <input type="text" id="searchname" name="searchname" placeholder="isimde Ara..."
-            hx-get="/member"
-            hx-trigger="keyup"
-            hx-target="#memberlist"
-            hx-swap="innerHTML"
-            >
             <p id="memberlist"></p>
         </div>
         <div id="memberdetail" class="column-right">

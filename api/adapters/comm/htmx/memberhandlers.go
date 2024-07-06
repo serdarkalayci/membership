@@ -11,8 +11,23 @@ import (
 )
 
 func (ws WebServer) GetMemberPage(c *gin.Context) {
+	ls := application.NewLookupService(ws.dbContext)
+	cities, err := ls.ListCities()
+	if err != nil {
+		log.Error().Err(err).Msg("Error while getting cities for member create")
+		c.HTML(500, "membercreate.html", nil)
+		return
+	}
+	areas, err := ls.ListAreas()
+	if err != nil {
+		log.Error().Err(err).Msg("Error while getting areas for member create")
+		c.HTML(500, "membercreate.html", nil)
+		return
+	}
 	c.HTML(200, "member.html", gin.H{
 		"title": "Member Page",
+		"Cities": cities,
+		"Areas": areas,
 	})
 }
 
@@ -20,6 +35,9 @@ func (ws WebServer) GetMemberList(c *gin.Context) {
 	pageSize := 10
 	pageNum := 1
 	searchName := c.Query("searchname")
+	var searchCity, searchArea int
+	searchCity, _ = strconv.Atoi(c.Query("searchcity")) 
+	searchArea, _ = strconv.Atoi(c.Query("searcharea"))
 	if c.Query("pageSize") != "" {
 		size, err := strconv.Atoi(c.Query("pageSize")); if err == nil {
 			pageSize = size
@@ -31,7 +49,7 @@ func (ws WebServer) GetMemberList(c *gin.Context) {
 		}
 	}
 	ms := application.NewMemberService(ws.dbContext)
-	members, count, err := ms.ListMembers(pageSize, pageNum, searchName)
+	members, count, err := ms.ListMembers(pageSize, pageNum, searchName, searchCity, searchArea)
 
 	if err != nil {
 		log.Error().Err(err).Msg("Error while listing members")

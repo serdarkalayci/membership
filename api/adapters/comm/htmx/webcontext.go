@@ -1,10 +1,9 @@
 package htmx
 
 import (
-	"os"
 	"path"
 
-	"github.com/rs/zerolog/log"
+	"github.com/nicholasjackson/env"
 
 	"github.com/gin-gonic/gin"
 	"github.com/serdarkalayci/membership/api/application"
@@ -14,17 +13,15 @@ type WebServer struct {
 	dbContext *application.DataContext
 }
 
+var basePath = env.String("BASE_PATH", false, "./adapters/comm/htmx", "Base path for the static files")
+
 func SetWebRoutes(engine *gin.Engine, dbContext *application.DataContext) {
+	env.Parse()
 	ws := &WebServer{
 		dbContext: dbContext,
 	}
-	currentPath, err := os.Getwd()
-	if err != nil {
-		log.Fatal().Err(err).Msg("Error while getting current path")
-	}
-	currentPath = "./adapters/comm/htmx"	
-	engine.Static("/assets", path.Join(currentPath, "assets"))
-	engine.LoadHTMLGlob(path.Join(currentPath, "templates", "*"))
+	engine.Static("/assets", path.Join(*basePath, "assets"))
+	engine.LoadHTMLGlob(path.Join(*basePath, "templates", "*"))
 	engine.GET("/memberpage", ws.GetMemberPage)
 	engine.GET("/member", ws.GetMemberList)
 	engine.GET("/member/:id", ws.GetMemberDetail)
