@@ -56,7 +56,7 @@ func (ws WebServer) GetMemberList(c *gin.Context) {
 		c.HTML(500, "memberlist.html", nil)
 		return
 	}
-	pageInfo := calculatePageInfo(pageSize, pageNum, count)
+	pageInfo := calculatePageInfo(pageSize, pageNum, count, searchName, searchCity, searchArea)
 	c.HTML(200, "memberlist.html", gin.H{
 		"Members": members,
 		"PageInfo": pageInfo,

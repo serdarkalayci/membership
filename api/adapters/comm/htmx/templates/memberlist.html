@@ -18,16 +18,16 @@
         <!-- </td></tr>
         <tr><td></td></tr> -->
         {{ end }}
-        <p>Showing records {{ .PageInfo.CurrentPage }} of {{ .PageInfo.TotalCount }}</p>
+        <p>{{ .PageInfo.TotalCount }} kayıttan {{ .PageInfo.CurrentPage }} gösteriliyor.</p>
         <p>
             {{ if .PageInfo.HasPrevious }}
-            <button hx-get="/member?pageNum={{ .PageInfo.PrevPage }}"
+            <button hx-get="/member?pageNum={{ .PageInfo.PrevPage }}&searchname={{ .PageInfo.SearchName }}&searchcity={{ .PageInfo.SearchCity }}&searcharea={{ .PageInfo.SearchArea }}"
             hx-trigger="click"
             hx-target="#memberlist"
             hx-swap="innerHTML">Önceki Sayfa</button>
             {{ end }}
             {{ if .PageInfo.HasNext }}
-            <button hx-get="/member?pageNum={{ .PageInfo.NextPage }}"
+            <button hx-get="/member?pageNum={{ .PageInfo.NextPage }}&searchname={{ .PageInfo.SearchName }}&searchcity={{ .PageInfo.SearchCity }}&searcharea={{ .PageInfo.SearchArea }}"
             hx-trigger="click"
             hx-target="#memberlist"
             hx-swap="innerHTML">Sonraki Sayfa</button>
