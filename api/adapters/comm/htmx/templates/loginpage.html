@@ -1,0 +1,22 @@
+<html>
+    <head>
+        <title>HTMX Login</title>
+        <script src="https://unpkg.com/htmx.org@1.9.12" integrity="sha384-ujb1lZYygJmzgSwoxRggbCHcjc0rB2XoQrxeTUQyRjrOnlCoYta87iKBWq3EsdM2" crossorigin="anonymous"></script>
+        <script src="https://unpkg.com/htmx-ext-response-targets@2.0.0/response-targets.js"></script>
+        <link rel="stylesheet" href="assets/site.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+    </head>
+    <body hx-ext="response-targets">
+        <h1>HTMX Login</h1>
+        <div id="login-form">
+            <form hx-post="/login" hx-target="body" hx-target-4**="#err-msg" th-target-5**="#err-msg">
+                <input type="text" name="username" placeholder="Username">
+                <input type="password" name="password" placeholder="Password">
+                <button class="btn" hx-post="/login">Login</button>
+            </form>
+            <div id="err-msg"></div>
+        </div>
+    </body>
+</html>

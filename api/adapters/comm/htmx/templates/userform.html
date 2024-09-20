@@ -1,0 +1,22 @@
+<html>
+    <head>
+        <title>HTMX User Form</title>
+        <script src="https://unpkg.com/htmx.org@1.9.12" integrity="sha384-ujb1lZYygJmzgSwoxRggbCHcjc0rB2XoQrxeTUQyRjrOnlCoYta87iKBWq3EsdM2" crossorigin="anonymous"></script>
+        <script src="https://unpkg.com/htmx-ext-response-targets@2.0.0/response-targets.js"></script>
+        <link rel="stylesheet" href="assets/site.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+    </head>
+    <body hx-ext="response-targets">
+        <h1>HTMX User Form</h1>
+        <form hx-post="/user" hx-target="this" hx-target-error="#err-msg">
+            <input type="hidden" name="id" value="{{ .ID }}">
+            <input type="text" name="username" placeholder="Username">
+            <input type="password" name="password" placeholder="Password">
+            <input type="email" name="email" placeholder="Email">
+            <button class="btn" hx-post="/user">Save</button>
+        </form>
+        <div id="err-msg"></div>
+    </body>
+</html>

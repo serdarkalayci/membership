@@ -53,6 +53,27 @@ CREATE TABLE public.members (
     CONSTRAINT members_membership_type FOREIGN KEY (membership_type_id) REFERENCES public.membership_types(id)
 );
 
+CREATE TABLE public.users (
+    id UUID NOT NULL,
+    username VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    CONSTRAINT users_pkey PRIMARY KEY (id ASC),
+    CONSTRAINT users_username UNIQUE (username)
+);
+
+CREATE TABLE public.roles (
+    id integer NOT NULL DEFAULT unique_rowid(),
+    name VARCHAR(255) NOT NULL,
+    CONSTRAINT roles_pkey PRIMARY KEY (id ASC)
+);
+
+CREATE TABLE public.user_roles (
+    user_id UUID NOT NULL,
+    role_id integer NOT NULL,
+    CONSTRAINT user_roles_user FOREIGN KEY (user_id) REFERENCES public.users(id),
+    CONSTRAINT user_roles_role FOREIGN KEY (role_id) REFERENCES public.roles(id)
+);
 
 
 -- Inserting Provinces

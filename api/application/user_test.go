@@ -12,8 +12,9 @@ type mockUserRepository struct{}
 
 var (
 	getUserFunc               func(ID string) (domain.User, error)
-	checkUserFunc             func(email string) (domain.User, error)
+	checkUserFunc             func(username string) (domain.User, error)
 	addUserFunc               func(u domain.User) (string, error)
+	updateUserFunc			  func(u domain.User) error
 	addConfirmationCodeFunc   func(userID string, confirmationCode string) error
 	checkConfirmationCodeFunc func(userID string, confirmationCode string) error
 	activateUserFunc          func(userID string) error
@@ -25,13 +26,18 @@ func (m mockUserRepository) GetUser(ID string) (domain.User, error) {
 }
 
 // CheckUser checks if the user with the given email exists
-func (m mockUserRepository) CheckUser(email string) (domain.User, error) {
-	return checkUserFunc(email)
+func (m mockUserRepository) CheckUser(username string) (domain.User, error) {
+	return checkUserFunc(username)
 }
 
 // AddUser adds a new user to the database
 func (m mockUserRepository) AddUser(u domain.User) (string, error) {
 	return addUserFunc(u)
+}
+
+// UpdateUser updates the user with the given ID
+func (m mockUserRepository) UpdateUser(u domain.User) error {
+	return updateUserFunc(u)
 }
 
 // AddConfirmationCode adds a confirmation code to the user with the given ID
@@ -64,24 +70,24 @@ func TestCheckUser(t *testing.T) {
 	mc := &MockContext{}
 	mc.SetRepositories(&mockUserRepository{}, nil, nil)
 	us := NewUserService(mc)
-	checkUserFunc = func(email string) (domain.User, error) {
+	checkUserFunc = func(username string) (domain.User, error) {
 		return domain.User{}, apperr.ErrUserNotFound{}
 	}
-	_, err := us.CheckUser("try@try.com", "password")
+	_, err := us.CheckUser("username", "password")
 	assert.ErrorAs(t, err, &apperr.ErrUserNotFound{})
 	hashedpass := hashPassword("password")
-	checkUserFunc = func(email string) (domain.User, error) {
+	checkUserFunc = func(username string) (domain.User, error) {
 		return domain.User{
-			ID:       "user1",
-			Email:    email,
+			ID:       username,
+			Email:    "user1@email.com",
 			Password: hashedpass,
 		}, nil
 	}
-	user, err := us.CheckUser("try@try.com", "password")
+	user, err := us.CheckUser("username", "password")
 	assert.NoError(t, err)
 	assert.Equal(t, "user1", user.ID)
 	// Check wrong password
-	_, err = us.CheckUser("try@try.com", "passw0rd")
+	_, err = us.CheckUser("username", "wrongpassword")
 	assert.ErrorAs(t, err, &apperr.ErrWrongCredentials{})
 }
 
@@ -131,7 +137,7 @@ func TestAddConfirmationCode(t *testing.T) {
 	assert.NoError(t, err)
 }
 
-func TestAddUser(t *testing.T) {
+func TestUpsertUser(t *testing.T) {
 	mc := &MockContext{}
 	mc.SetRepositories(&mockUserRepository{}, nil, nil)
 	us := NewUserService(mc)
@@ -144,11 +150,11 @@ func TestAddUser(t *testing.T) {
 		Password: "P",
 		FirstName:     "Test",
 	}
-	err := us.AddUser(user)
+	_, err := us.UpsertUser(user)
 	assert.ErrorAs(t, err, &apperr.ErrPasswordNotStrong{})
-	// Now let's fix the password, but this time AddUser will return duplicate key error
+	// Now let's fix the password, but this time UpsertUser will return duplicate key error
 	user.Password = "P@ssw0rd123"
-	err = us.AddUser(user)
+	_, err = us.UpsertUser(user)
 	assert.ErrorAs(t, err, &apperr.DuplicateKeyError{})
 	// Now let's fix the duplicate key error, bur adding confirmation code will return user not found error
 	addUserFunc = func(u domain.User) (string, error) {
@@ -157,13 +163,13 @@ func TestAddUser(t *testing.T) {
 	addConfirmationCodeFunc = func(userID string, confirmationCode string) error {
 		return apperr.ErrUserNotFound{}
 	}
-	err = us.AddUser(user)
+	_, err = us.UpsertUser(user)
 	assert.ErrorAs(t, err, &apperr.ErrUserNotFound{})
 	// Now let's fix the user not found error, and everything should work
 	addConfirmationCodeFunc = func(userID string, confirmationCode string) error {
 		return nil
 	}
-	err = us.AddUser(user)
+	_, err = us.UpsertUser(user)
 	assert.NoError(t, err)
 }
 

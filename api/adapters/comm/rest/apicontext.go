@@ -4,7 +4,9 @@ import (
 	"context"
 	"net/http"
 	"strconv"
+	"time"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/nicholasjackson/env"
 	"github.com/serdarkalayci/membership/api/adapters/comm/htmx"
@@ -52,6 +54,17 @@ func (restServer *RestServer) RunServer(bindAddress *string) (error) {
 	// 	}
 	// }()
 	engine := gin.New()
+	engine.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"http://localhost:5500"},
+		AllowMethods:     []string{"PUT", "PATCH", "POST", "GET", "OPTIONS"},
+		AllowHeaders:     []string{"Origin"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		AllowOriginFunc: func(origin string) bool {
+		  return origin == "https://github.com"
+		},
+		MaxAge: 12 * time.Hour,
+	  }))
 	engine.Use(otelgin.Middleware("membership-server"))
 	var frontEndEnabled = env.Bool("FRONTEND_ENABLED", false, false, "Enable or disable the frontend")
 	*frontEndEnabled = true

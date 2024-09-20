@@ -15,8 +15,9 @@ import (
 // UserRepository is the interface to interact with User domain object
 type UserRepository interface {
 	GetUser(ID string) (domain.User, error)
-	CheckUser(email string) (domain.User, error)
+	CheckUser(username string) (domain.User, error)
 	AddUser(u domain.User) (string, error)
+	UpdateUser(u domain.User) error
 	AddConfirmationCode(userID string, confirmationCode string) error
 	CheckConfirmationCode(userID string, confirmationCode string) error
 	ActivateUser(userID string) error
@@ -40,7 +41,7 @@ func (us UserService) GetUser(ID string) (domain.User, error) {
 }
 
 // CheckUser checks if the username and password maches any from the repository by first hashing its password, returns error if none found
-func (us UserService) CheckUser(username string, password string) (domain.User, error) {
+func (us UserService) CheckUser(username, password string) (domain.User, error) {
 	user, err := us.dc.GetUserRepository().CheckUser(username)
 	if err != nil {
 		return domain.User{}, err
@@ -51,23 +52,31 @@ func (us UserService) CheckUser(username string, password string) (domain.User, 
 	return domain.User{}, apperr.ErrWrongCredentials{}
 }
 
-// AddUser adds a new user to the repository by first hashing its password
-func (us UserService) AddUser(u domain.User) error {
+// UpsertUser inserts or updates a user to the repository by first hashing its password
+func (us UserService) UpsertUser(u domain.User) (string, error) {
 	if err := checkPassword(u.Password); err != nil {
-		return err
+		return "", err
 	}
 	u.Password = hashPassword(u.Password)
+	if u.ID != "" { // Update
+		err := us.dc.GetUserRepository().UpdateUser(u)
+		if err != nil {
+			return "", err
+		}
+		return u.ID, nil
+	}
+	// Add
 	newUID, err := us.dc.GetUserRepository().AddUser(u)
 	if err != nil {
-		return err
+		return "", err
 	}
-	// Generate a random string and send an email to the user with the confirmation code
-	u.ID = newUID
-	err = us.addConfirmationCode(u)
-	if err != nil {
-		return err
-	}
-	return nil
+	// // Generate a random string and send an email to the user with the confirmation code
+	// u.ID = newUID
+	// err = us.addConfirmationCode(u)
+	// if err != nil {
+	// 	return err
+	// }
+	return newUID, nil
 }
 
 // CheckConfirmationCode checks if the confirmation code matches the one in the repository, if so, activates the user
@@ -137,21 +146,21 @@ func comparePasswords(plaintextPassword string, hashedPassword string) bool {
 
 func checkPassword(password string) error {
 	if len(password) < 6 {
-		return apperr.ErrPasswordNotStrong{Reason: "password must be at least 6 characters"}
+		return apperr.ErrPasswordNotStrong{Reason: "şifre en az 6 karakterden oluşmalıdır."}
 	}
 next:
 	for name, classes := range map[string][]*unicode.RangeTable{
-		"upper case": {unicode.Upper, unicode.Title},
-		"lower case": {unicode.Lower},
-		"numeric":    {unicode.Number, unicode.Digit},
-		"special":    {unicode.Space, unicode.Symbol, unicode.Punct, unicode.Mark},
+		"büyük harf": {unicode.Upper, unicode.Title},
+		"küçük harf": {unicode.Lower},
+		"sayısal":    {unicode.Number, unicode.Digit},
+		"özel":    {unicode.Space, unicode.Symbol, unicode.Punct, unicode.Mark},
 	} {
 		for _, r := range password {
 			if unicode.IsOneOf(classes, r) {
 				continue next
 			}
 		}
-		return apperr.ErrPasswordNotStrong{Reason: fmt.Sprintf("password must have at least one %s character", name)}
+		return apperr.ErrPasswordNotStrong{Reason: fmt.Sprintf("şifrede en az bir %s karakter olmalıdır.", name)}
 	}
 	return nil
 }

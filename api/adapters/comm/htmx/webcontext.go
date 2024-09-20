@@ -6,6 +6,7 @@ import (
 	"github.com/nicholasjackson/env"
 
 	"github.com/gin-gonic/gin"
+	"github.com/serdarkalayci/membership/api/adapters/comm/htmx/middleware"
 	"github.com/serdarkalayci/membership/api/application"
 )
 
@@ -22,13 +23,20 @@ func SetWebRoutes(engine *gin.Engine, dbContext *application.DataContext) {
 	}
 	engine.Static("/assets", path.Join(*basePath, "assets"))
 	engine.LoadHTMLGlob(path.Join(*basePath, "templates", "*"))
-	engine.GET("/memberpage", ws.GetMemberPage)
-	engine.GET("/member", ws.GetMemberList)
-	engine.GET("/member/:id", ws.GetMemberDetail)
-	engine.PUT("/member/:id", ws.UpdateMember)
-	engine.GET("/member/:id/edit", ws.EditMemberDetail)
-	engine.GET("/memberform", ws.GetMemberForm)
-	engine.POST("/member", ws.CreateMember)
-	engine.GET("/cities", ws.GetCities)
+	authorized := engine.Group("/")
+	authorized.Use(middleware.Authenticate())
+	authorized.GET("/memberpage", ws.GetMemberPage)
+	authorized.GET("/member", ws.GetMemberList)
+	authorized.GET("/member/:id", ws.GetMemberDetail)
+	authorized.PUT("/member/:id", ws.UpdateMember)
+	authorized.GET("/member/:id/edit", ws.EditMemberDetail)
+	authorized.GET("/memberform", ws.GetMemberForm)
+	authorized.POST("/member", ws.CreateMember)
+	authorized.GET("/cities", ws.GetCities)
+
+	engine.GET("/loginpage", ws.GetLoginPage)
+	engine.POST("/login", ws.Login)
+	engine.GET("/userform", ws.GetUserForm)
+	engine.POST("/user", ws.UpsertUser)
 }
 
