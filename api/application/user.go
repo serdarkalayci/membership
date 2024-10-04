@@ -6,6 +6,7 @@ import (
 	"math/rand"
 	"unicode"
 
+	"github.com/rs/zerolog/log"
 	apperr "github.com/serdarkalayci/membership/api/application/errors"
 	"github.com/serdarkalayci/membership/api/domain"
 	"github.com/spf13/viper"
@@ -42,13 +43,17 @@ func (us UserService) GetUser(ID string) (domain.User, error) {
 
 // CheckUser checks if the username and password maches any from the repository by first hashing its password, returns error if none found
 func (us UserService) CheckUser(username, password string) (domain.User, error) {
+	log.Info().Msgf("CheckUser: %v", username)
 	user, err := us.dc.GetUserRepository().CheckUser(username)
 	if err != nil {
+		log.Warn().Msgf("Error while checking user: %v", err)
 		return domain.User{}, err
 	}
 	if comparePasswords(password, user.Password) {
+		log.Info().Msgf("User found: %v", user)
 		return user, nil
 	}
+	log.Warn().Msgf("Error while checking user: %v", apperr.ErrWrongCredentials{})
 	return domain.User{}, apperr.ErrWrongCredentials{}
 }
 

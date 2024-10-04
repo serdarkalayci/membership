@@ -6,6 +6,7 @@ import (
 	apperr "github.com/serdarkalayci/membership/api/application/errors"
 	"github.com/serdarkalayci/membership/api/domain"
 	"github.com/stretchr/testify/assert"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type mockUserRepository struct{}
@@ -199,3 +200,19 @@ func TestCheckConfirmationCode(t *testing.T) {
 	err = us.CheckConfirmationCode("1", "code")
 	assert.NoError(t, err)
 }
+func TestHashPassword(t *testing.T) {
+	password := "Admin123!"
+	hashedPassword := hashPassword(password)
+	assert.NotEqual(t, password, hashedPassword)
+	assert.NotEmpty(t, hashedPassword)
+
+	// Verify that the hashed password can be compared correctly
+	err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+	assert.NoError(t, err)
+
+	// Verify that a wrong password does not match
+	wrongPassword := "WrongP@ssw0rd"
+	err = bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(wrongPassword))
+	assert.Error(t, err)
+}
+

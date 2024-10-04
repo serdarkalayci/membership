@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: membership-app
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: membership-app
@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: membership-app
-        image: serdarkalayci/membership:0.7
+        image: serdarkalayci/membership:0.1.5
         ports:
         - containerPort: 5555
         env:
@@ -23,9 +23,9 @@ spec:
         - name: DB_USER
           value: "membershipuser"
         - name: DB_HOST
-          value: "membership-db"
+          value: "192.168.178.91"
         - name: DB_PORT
-          value: "26257"
+          value: "5432"
         - name: DB_NAME
           value: "membership"
         - name: BASE_URL
@@ -34,8 +34,8 @@ spec:
           value: "./"
         resources:
           limits:
-            cpu: "1"
+            cpu: "0.5"
             memory: "512Mi"
           requests:
-            cpu: "0.5"
+            cpu: "0.1"
             memory: "256Mi"

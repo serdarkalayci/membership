@@ -11,7 +11,7 @@
     <body hx-ext="response-targets">
         <h1>HTMX Login</h1>
         <div id="login-form">
-            <form hx-post="/login" hx-target="body" hx-target-4**="#err-msg" th-target-5**="#err-msg">
+            <form hx-post="/login" hx-target="body" hx-target-4**="#err-msg" hx-target-5**="#err-msg">
                 <input type="text" name="username" placeholder="Username">
                 <input type="password" name="password" placeholder="Password">
                 <button class="btn" hx-post="/login">Login</button>

@@ -2,6 +2,7 @@ package htmx
 
 import (
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -83,8 +84,8 @@ func (ws WebServer) Login(c *gin.Context) {
 	var jwtKey = []byte(secretKey)
 	// Create the JWT key used to create the signature
 	tokenString, err := token.SignedString(jwtKey)
-	c.SetCookie(cookieName, tokenString, 3600, "/", "localhost", false, true)
-	c.Redirect(302, "/memberpage")
+	c.SetCookie(cookieName, tokenString, 3600, "/", strings.Split(c.Request.Host, ":")[0], false, true)
+	c.Redirect(http.StatusFound, "/memberpage")
 }
 
 func checkLogin(c *gin.Context) (status bool, httpStatusCode int, claims *common.Claims) {
@@ -162,7 +163,7 @@ func (ws WebServer) Refresh(c *gin.Context) {
 		}
 
 		// Set the new token as the users `token` cookie
-		c.SetCookie("membershiplogin", tokenString, 3600, "/", "localhost", false, true)
+		c.SetCookie("membershiplogin", tokenString, 3600, "/", strings.Split(c.Request.Host, ":")[0], false, true)
 	} else {
 		c.Redirect(401, "/loginpage")
 	}

@@ -38,5 +38,7 @@ func SetWebRoutes(engine *gin.Engine, dbContext *application.DataContext) {
 	engine.POST("/login", ws.Login)
 	engine.GET("/userform", ws.GetUserForm)
 	engine.POST("/user", ws.UpsertUser)
+
+	engine.GET("/empty", ws.GetEmptyPage)
 }
 

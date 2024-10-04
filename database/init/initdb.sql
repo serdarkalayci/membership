@@ -1,33 +1,30 @@
 CREATE DATABASE membership;
 CREATE USER membershipuser WITH PASSWORD 'membershippassword';
-GRANT admin TO membershipuser;
-USE membership;
+GRANT ALL PRIVILEGES ON DATABASE membership TO membershipuser;
+ALTER DATABASE membership OWNER TO membershipuser;
+\c membership membershipuser;
 
 -- Creating tables
 CREATE TABLE public.provinces (
-    id integer NOT NULL DEFAULT unique_rowid(),
-    name VARCHAR(255) NOT NULL,
-    CONSTRAINT provinces_pkey PRIMARY KEY (id ASC)
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE public.cities (
-    id integer NOT NULL DEFAULT unique_rowid(),
+    id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     province_id integer NOT NULL,
-    CONSTRAINT cities_pkey PRIMARY KEY (id ASC),
     CONSTRAINT cities_province FOREIGN KEY (province_id) REFERENCES public.provinces(id)
 );
 
 CREATE TABLE public.areas (
-    id integer NOT NULL DEFAULT unique_rowid(),
-    name VARCHAR(255) NOT NULL,
-    CONSTRAINT areas_pkey PRIMARY KEY (id ASC)
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE public.membership_types (
-    id integer NOT NULL DEFAULT unique_rowid(),
-    name VARCHAR(255) NOT NULL,
-    CONSTRAINT membership_types_pkey PRIMARY KEY (id ASC)
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE public.members (
@@ -38,7 +35,7 @@ CREATE TABLE public.members (
     phone VARCHAR(255) NULL,
     city_id integer NOT NULL,
     area_id integer NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT now():::TIMESTAMP,
+    created_at TIMESTAMP NOT NULL DEFAULT now(),
     membership_type_id integer NOT NULL,
     membership_start_date DATE NULL,
     last_contact_date DATE NULL,
@@ -47,7 +44,7 @@ CREATE TABLE public.members (
     date_of_birth DATE NULL,
     passive BOOL NOT NULL DEFAULT false,
     notes TEXT NULL,
-    CONSTRAINT members_pkey PRIMARY KEY (id ASC),
+    CONSTRAINT members_pkey PRIMARY KEY (id),
     CONSTRAINT members_city FOREIGN KEY (city_id) REFERENCES public.cities(id),
     CONSTRAINT members_area FOREIGN KEY (area_id) REFERENCES public.areas(id),
     CONSTRAINT members_membership_type FOREIGN KEY (membership_type_id) REFERENCES public.membership_types(id)
@@ -58,14 +55,13 @@ CREATE TABLE public.users (
     username VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
-    CONSTRAINT users_pkey PRIMARY KEY (id ASC),
+    CONSTRAINT users_pkey PRIMARY KEY (id),
     CONSTRAINT users_username UNIQUE (username)
 );
 
 CREATE TABLE public.roles (
-    id integer NOT NULL DEFAULT unique_rowid(),
-    name VARCHAR(255) NOT NULL,
-    CONSTRAINT roles_pkey PRIMARY KEY (id ASC)
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE public.user_roles (
@@ -75,6 +71,20 @@ CREATE TABLE public.user_roles (
     CONSTRAINT user_roles_role FOREIGN KEY (role_id) REFERENCES public.roles(id)
 );
 
+-- Inserting Roles
+INSERT INTO public.roles ("id", "name") VALUES
+(1, 'Admin'),
+(2, 'User');
+
+-- Inserting Users
+INSERT INTO public.users ("id", "username", "password", "email") VALUES
+('00000000-0000-0000-0000-000000000001', 'admin', '$2a$10$YI0rRpOKFs0/mBI1ixP3pukU8hb5cRgcB5478kWbQRPfH9MSw5UJS', 'admin@admin.com'),
+('00000000-0000-0000-0000-000000000002', 'user', '$2a$10$WZuiIeib85hrVQt5ChZ63eIxo.O.Ws9YE.hQ3tKU93ugnIGks/Fsu', 'user@user.com');
+
+-- Inserting User Roles
+INSERT INTO public.user_roles ("user_id", "role_id") VALUES
+('00000000-0000-0000-0000-000000000001', 1),
+('00000000-0000-0000-0000-000000000002', 2);
 
 -- Inserting Provinces
 INSERT INTO public.provinces ("id", "name") VALUES

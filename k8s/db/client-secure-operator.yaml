@@ -23,7 +23,7 @@ spec:
   serviceAccountName: membership-db-sa
   containers:
   - name: membership-db-client-secure
-    image: cockroachdb/cockroach:v23.2.3
+    image: cockroachdb/cockroach:v24.2.2
     imagePullPolicy: IfNotPresent
     volumeMounts:
     - name: client-certs
@@ -31,6 +31,13 @@ spec:
     command:
     - sleep
     - "2147483648" # 2^31
+    resources:
+      requests:
+        cpu: 100m
+        memory: 100Mi
+      limits:
+        cpu: 500m
+        memory: 500Mi
   terminationGracePeriodSeconds: 0
   volumes:
   - name: client-certs

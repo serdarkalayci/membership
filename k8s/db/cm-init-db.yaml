@@ -78,6 +78,18 @@ data:
         CONSTRAINT user_roles_role FOREIGN KEY (role_id) REFERENCES public.roles(id)
     );
 
+    -- Inserting Users, Roles and User Roles
+    INSERT INTO public.roles ("id", "name") VALUES
+    (1, 'Admin'),
+    (2, 'User');
+
+    INSERT INTO public.users ("id", "username", "password", "email") VALUES
+    ('00000000-0000-0000-0000-000000000001', 'admin', '$2a$10$DJ9/eXRePDPZtSWoy10XYu6ABS74MCgcK10.7umvtvz4.nEZAjreO', 'admin@admin.info'),
+    ('00000000-0000-0000-0000-000000000002', 'user', '$2a$10$WZuiIeib85hrVQt5ChZ63eIxo.O.Ws9YE.hQ3tKU93ugnIGks/Fsu', 'user@user.info');
+
+    INSERT INTO public.user_roles ("user_id", "role_id") VALUES
+    ('00000000-0000-0000-0000-000000000001', 1),
+    ('00000000-0000-0000-0000-000000000002', 2);
 
     -- Inserting Provinces
     INSERT INTO public.provinces ("id", "name") VALUES

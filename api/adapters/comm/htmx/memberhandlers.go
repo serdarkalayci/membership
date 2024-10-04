@@ -149,7 +149,7 @@ func (ws WebServer) UpdateMember(c *gin.Context) {
 		c.HTML(500, "memberedit.html", nil)
 		return
 	}
-	c.Redirect(303, "/memberpage")
+	c.Redirect(303, "/empty")
 }
 
 func (ws WebServer) GetMemberForm(c *gin.Context) {

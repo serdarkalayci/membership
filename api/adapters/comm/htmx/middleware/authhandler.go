@@ -10,6 +10,7 @@ import (
 const secretKey = "the_most_secure_secret"
 const cookieName = "membershiptoken"
 
+// Authenticate is a middleware that checks if the request is authenticated
 func Authenticate() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// t := time.Now()
@@ -18,11 +19,13 @@ func Authenticate() gin.HandlerFunc {
 		tknStr, err := c.Cookie(cookieName)
 		if err != nil {
 			if err == http.ErrNoCookie {
-				// If the cookie is not set, return an unauthorized status
-				c.Redirect(http.StatusUnauthorized, "/loginpage")
+				// If the cookie is not set, redirect to login page
+				c.Redirect(http.StatusTemporaryRedirect, "/loginpage")
+				return
 			}
-			// For any other type of error, return a bad request status
-			c.Redirect(http.StatusUnauthorized, "/loginpage")
+			// For any other type of error, redirect to login page
+			c.Redirect(http.StatusTemporaryRedirect, "/loginpage")
+			return
 		}
 
 		// Get the JWT string from the cookie
@@ -37,13 +40,19 @@ func Authenticate() gin.HandlerFunc {
 			return jwtKey, nil
 		})
 		if !tkn.Valid {
+			// If token is not valid, redirect to login page
 			c.Redirect(http.StatusUnauthorized, "/loginpage")
+			return
 		}
 		if err != nil {
 			if err == jwt.ErrSignatureInvalid {
+				// If signature is invalid, redirect to login page
 				c.Redirect(http.StatusUnauthorized, "/loginpage")
+				return
 			}
+			// For any other type of error, redirect to login page
 			c.Redirect(http.StatusUnauthorized, "/loginpage")
+			return
 		}
 		c.Set("UserID", claims.UserID)
 		c.Set("Roles", claims.Roles)
