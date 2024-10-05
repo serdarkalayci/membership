@@ -1,0 +1,5 @@
+{{ range .Links }}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button hx-get="{{ .URL }}" hx-trigger="click" hx-target=".container" hx-swap="innerHTML">{{ .Text }}</button>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{{ end }}
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ .UserName }}

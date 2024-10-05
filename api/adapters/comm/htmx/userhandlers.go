@@ -72,6 +72,7 @@ func (ws WebServer) Login(c *gin.Context) {
 	claims := &common.Claims{
 		UserID:   user.ID,
 		Roles: []string{},
+		UserName: user.Username,
 		StandardClaims: jwt.StandardClaims{
 			// In JWT, the expiry time is expressed as unix milliseconds
 			ExpiresAt: expirationTime.Unix(),

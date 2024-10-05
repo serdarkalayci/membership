@@ -1,7 +1,7 @@
-CREATE DATABASE membership;
-CREATE USER membershipuser WITH PASSWORD 'membershippassword';
-GRANT ALL PRIVILEGES ON DATABASE membership TO membershipuser;
-ALTER DATABASE membership OWNER TO membershipuser;
+-- CREATE DATABASE membership;
+-- CREATE USER membershipuser WITH PASSWORD 'membershippassword';
+-- GRANT ALL PRIVILEGES ON DATABASE membership TO membershipuser;
+-- ALTER DATABASE membership OWNER TO membershipuser;
 \c membership membershipuser;
 
 -- Creating tables

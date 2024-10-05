@@ -16,7 +16,7 @@ services:
   #   depends_on:
   #     - membership-db
   membership-db:
-    image: arm64v8/postgres:16.2-bullseye
+    image: postgres:16.2-bullseye
     container_name: membership-db
     hostname: membership-db
     shm_size: 128mb

@@ -1,13 +1,3 @@
-<html>
-<head>
-    <title>My Web Page</title>
-    <script src="https://unpkg.com/htmx.org@1.9.12" integrity="sha384-ujb1lZYygJmzgSwoxRggbCHcjc0rB2XoQrxeTUQyRjrOnlCoYta87iKBWq3EsdM2" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="assets/site.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
-</head>
-<body>
     <h1>{{ .title }}</h1>
     <div class="top-form">
         <form id="membersearch" hx-get="/member" hx-target="#memberlist"
@@ -41,6 +31,3 @@
         <div id="memberdetail" class="column-right">
         </div>
     </div>
-</body>
-</body>
-</html>
