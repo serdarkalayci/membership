@@ -85,8 +85,9 @@ func (ws WebServer) Login(c *gin.Context) {
 	var jwtKey = []byte(secretKey)
 	// Create the JWT key used to create the signature
 	tokenString, err := token.SignedString(jwtKey)
+	c.SetSameSite(http.SameSiteStrictMode)
 	c.SetCookie(cookieName, tokenString, 3600, "/", strings.Split(c.Request.Host, ":")[0], false, true)
-	c.Redirect(http.StatusFound, "/memberpage")
+	c.Redirect(http.StatusFound, "/")
 }
 
 func checkLogin(c *gin.Context) (status bool, httpStatusCode int, claims *common.Claims) {
@@ -168,4 +169,10 @@ func (ws WebServer) Refresh(c *gin.Context) {
 	} else {
 		c.Redirect(401, "/loginpage")
 	}
+}
+
+func (ws WebServer) Logout(c *gin.Context) {
+	c.SetSameSite(http.SameSiteStrictMode)
+	c.SetCookie(cookieName, "", -1, "/", strings.Split(c.Request.Host, ":")[0], false, true)
+	c.Redirect(http.StatusFound, "/loginpage")
 }
