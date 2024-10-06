@@ -1,5 +1,13 @@
 {{ range .Links }}
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button hx-get="{{ .URL }}" hx-trigger="click" hx-target=".container" hx-swap="innerHTML">{{ .Text }}</button>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="margin: 0 20px 0 20px;">
+    <button hx-get="{{ .URL }}" hx-trigger="click" hx-target="#content" hx-swap="innerHTML">{{ .Text }}</button>
+</span>
 {{ end }}
-|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ .UserName }}
+{{ if .UserName }}
+<span style="margin: 0 20px 0 20px;"></span>
+    <button id="logout-button" hx-get="/logout" hx-trigger="click" hx-swap="none">
+    Logout
+    </button>
+</span>
+{{ end }}
+<span style="margin: 0 20px 0 20px;">{{ .UserName }}</span>

@@ -11,19 +11,23 @@ func (ws WebServer) GetHomePage(c *gin.Context) {
 }
 
 func (ws WebServer) GetEmptyPage(c *gin.Context) {
-	c.HTML(200, "emptyr.html", gin.H{})
+	c.HTML(200, "empty.html", gin.H{})
 }
 
 func (ws WebServer) GetNavigationPage(c *gin.Context) {
 	claims, err := middleware.CheckAuthentication(c)
 	if err != nil {
-		c.HTML(401, "navigation.html", nil)
+		links := []common.Link{
+			{URL: "/loginpage", Text: "Giriş Yap"},
+		}
+		c.HTML(200, "navigation.html", gin.H{
+			"Links" : links,
+		})
 		return
 	}
 	links := []common.Link{
 		{URL: "/home", Text: "Home"},
 		{URL: "/memberpage", Text: "Üyeler"},
-		{URL: "/logout", Text: "Çıkış"},
 	}
 	
 	c.HTML(200, "navigation.html", gin.H{

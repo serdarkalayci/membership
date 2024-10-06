@@ -174,5 +174,6 @@ func (ws WebServer) Refresh(c *gin.Context) {
 func (ws WebServer) Logout(c *gin.Context) {
 	c.SetSameSite(http.SameSiteStrictMode)
 	c.SetCookie(cookieName, "", -1, "/", strings.Split(c.Request.Host, ":")[0], false, true)
-	c.Redirect(http.StatusFound, "/loginpage")
+	c.Header("HX-Redirect", "/")
+	// c.HTML(200, "empty.html", gin.H{})
 }

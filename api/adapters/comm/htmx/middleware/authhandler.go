@@ -18,7 +18,7 @@ func Authenticate() gin.HandlerFunc {
 		claims, err := CheckAuthentication(c)
 		if err != nil {
 			log.Err(err).Msg("Authentication failed")
-			c.HTML(http.StatusUnauthorized, "unauthorized.html", nil)
+			c.Header("HX-Redirect", "/")
 			return
 		}
 		c.Set("UserID", claims.UserID)
