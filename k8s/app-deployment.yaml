@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: membership-app
-        image: serdarkalayci/membership:0.1.5
+        image: serdarkalayci/membership:0.2.0
         ports:
         - containerPort: 5555
         env:
